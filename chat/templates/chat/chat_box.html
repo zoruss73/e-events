@@ -1,0 +1,67 @@
+{% extends 'components2/base.html' %}
+{% load static %}
+{% block title %}
+  Message
+{% endblock %}
+
+{% block content %}
+  {% include 'components2/side_message.html' %}
+
+  <main id="main" class="main">
+    <div class="chat d-flex flex-column vh-100">
+      <button id="backToSidebar" class="btn btn-outline-primary me-3 d-none">← Back</button>
+      <div class="chat-header d-flex align-items-center">
+        <img src="{% static 'assets2/img/avatar.svg' %}" alt="" class="order-1" />
+        <div class="about order-2 d-inline-block flot-left ms-3">
+          <p class="mb-0" style="">
+            <strong></strong>
+          </p>
+          <p class="mb-0 email">russeljarcia07@gmail.com</p>
+        </div>
+      </div>
+
+      <div class="chat-history">
+        <ul class="mb-0">
+          <li class="clearfix">
+            <div class="message-data text-center">
+              <span class="message-date-time">10:10 AM, Today</span>
+            </div>
+            <div class="message other-message float-end mt-3">Hi Russel, how are you? How is the project coming along?</div>
+          </li>
+          <li class="clearfix">
+            <div class="message-data text-center">
+              <span class="message-data-time">10:12 AM, Today</span>
+            </div>
+            <img src="{% static 'assets2/img/avatar.svg' %}" alt="avatar" class="receiver_img me-2" />
+            <div class="message my-message mt-3">Are we meeting today?</div>
+          </li>
+        </ul>
+      </div>
+      <div class="chat-message clearfix">
+        <div class="input-group mb-0">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="bi bi-send"></i></span>
+          </div>
+          <input type="text" class="form-control" placeholder="Enter text here..." />
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <script>
+    const webSocketProtocol = window.location.protocol === "https:" ? "wss":"ws";
+    const wsEndpoint = `${webSocketProtocol}://${window.location.host}/ws/chat/`;
+    const socket = new WebSocket(wsEndpoint)
+
+
+    socket.onopen = (event) => {
+      console.log("WebSocket connection opened");
+    }
+
+    socket.onclose = (event) => {
+      console.log("WebSocket connection closed");
+    }
+
+  </script>
+{% endblock %}

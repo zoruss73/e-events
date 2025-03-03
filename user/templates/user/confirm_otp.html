@@ -1,0 +1,46 @@
+{% extends 'components1/base.html' %}
+{% load static %}
+{% block title %}
+  E-Events | Forgot Password
+{% endblock %}
+
+{% block content %}
+  <main class="bg-login">
+    <div class="container">
+      <section class="section min-vh-100 d-flex justify-content-center align-items-center py-4">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+              <div class="d-flex justify-content-center py-4">
+                <a href="{% url 'user:landingpage' %}" class="logo d-flex align-items-center w-auto">
+                    <h3 class="text-light" style="font-weight: 700; font-size: 40px; font-family: z-index: 1; "Poppings", sans-serif;">E-Events</h3>
+                  </a>
+              </div>
+
+              <div class="card mb-3">
+                <div class="card-body">
+                    <div class="pt-4 pb-2">
+                        <h5 class="text-center pb-0 fs-4">OTP CONFIRMATION</h5>
+                        <p class="text-center small">Please confirm your otp to continue changing your password.</p>
+                    </div>
+
+                    <form method="post" class="row g-3">
+                      {% csrf_token %}
+                        <div class="mb-2">
+                            <label for="otp_number">OTP</label>
+                            <input type="text" class="form-control" name="otp_number" id="otp_number" placeholder="123456" required maxlength="6">
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="submit" class="sd w-100">Send</button>
+                        </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+{% endblock %}

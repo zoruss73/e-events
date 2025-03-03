@@ -1,0 +1,80 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block title %}
+  E-Events | Create Booking
+{% endblock %}
+
+{% block content %}
+  {% include 'components1/sidebar.html' %}
+
+  <section class="section user-create-bookings mt-5">
+    <div class="card mb-4">
+      <div class="card-header t-header text-light mb-4">
+        <a href="{% url 'user:booking' %}"><i class="bi bi-arrow-left"></i></a>
+      </div>
+      <div class="card-body">
+        <form method="post" class="row g-3">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="col-lg-6">
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+              {{ field }}
+            </div>
+          {% endfor %}
+          <div class="mb-3" style="display: none;" id="custom-text-area">
+            <label for="exampleFormControlTextarea1" class="form-label">Service:</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
+          </div>
+          <div class="col-lg-6 mt-3 checkbox-group">
+            <input type="checkbox" class="form-check-input" required id="terms_and_conditions" />
+            <label for="terms_and_conditions" class="form-check-label">I have read and accept the <a href="#">Tems and Conditions</a></label>
+          </div>
+          <div class="col-lg-6 mt-3">
+            <button type="submit" class="sd float-end w-md-100">Next</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script src="{% static 'assets1/js/booking.js' %}"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let bookedDates = {{ booked_dates|safe }};
+        let dateInput = document.querySelector("input[name='wedding_date']");
+        let submitButton = document.querySelector("button[type='submit']");
+
+        dateInput.addEventListener("input", function () {
+            let selectedDate = this.value; 
+
+            if (bookedDates.includes(selectedDate)) {
+                Swal.fire({
+                    icon:"error",
+                    title: "Invalid date",
+                    text: "Sorry, this date is already booked!"
+                });
+                this.value = ""; 
+                submitButton.disabled = true; 
+            } else {
+                submitButton.disabled = false; 
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const packageSelect = document.getElementById("id_package");
+      const customPackageTextarea = document.getElementById("custom-text-area");
+      
+      console.log(packageSelect.value);
+
+      packageSelect.addEventListener("change", function() {
+        const selectedText = packageSelect.options[packageSelect.selectedIndex].text;
+        if (selectedText === "Customize Package") {
+          customPackageTextarea.style.display = "block";
+        } else {
+          customPackageTextarea.style.display = "none";
+        }
+      });
+    });
+</script>
+{% endblock %}

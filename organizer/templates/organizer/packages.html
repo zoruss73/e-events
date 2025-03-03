@@ -1,0 +1,214 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% block title %}
+  E-Events | Packages
+{% endblock %}
+
+{% block content %}
+  {% include 'components/sidebar.html' %}
+
+   <section class="section packages mt-5 px-3">
+    <div class="card mb-4">
+      <div class="card-header mb-4 t-header d-flex align-items-center justify-content-between">
+        <i class="bi bi-table"></i>
+        {% comment %} <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add_package">
+          <i class="bi bi-plus"></i>
+          <span>Add Package</span>
+        </a> {% endcomment %}
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-hover text-center">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Package Name</th>
+              <th>Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for package in packages %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ package.package_name }}</td>
+                <td>{{ package.package_price }}</td>
+                <td class="d-flex justify-content-center gap-2">
+                  <button class="btn btn-info view" data-bs-toggle="modal" data-bs-target="#view_package_modal_{{ package.id }}"><i class="bi bi-eye"></i></button>
+                  <button class="btn btn-warning view" data-bs-toggle="modal" data-bs-target="#update_package_modal_{{ package.id }}"><i class="bi bi-pen"></i></button>
+                  {% comment %} <button class="btn btn-danger view" data-bs-toggle="modal" data-bs-target="#delete_package_modal_{{ package.id }}"><i class="bi bi-trash3"></i></button> {% endcomment %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section> 
+
+  {% comment %}Add Modal{% endcomment %}
+  <div class="modal fade package_modal" id="add_package">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light text-dark">
+          <h3 class="modal-title">Add New Package</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <form action="{% url 'organizer:packages' %}" id="data_form" method="post">
+            {% csrf_token %}
+            <div class="text_field">
+              <div class="">
+                <label for="package_name">Package Name</label>
+                <input type="text" name="package_name" id="package_name" required />
+              </div>
+              <div class="">
+                <label for="package_name">Price</label>
+                <input type="number" name="package_price" id="package_price" maxlength="6" required />
+              </div>
+              <div class="">
+                <label for="package_name">Services</label>
+                <textarea name="package_inclusion" id="package_inclusion" rows="5"></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer text-center">
+          <button type="submit" form="data_form" class="add_package_btn">Add Package <i class="bi bi-box-arrow-in-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% comment %}End of add modal{% endcomment %}
+
+  {% for package in packages %}
+    {% comment %}View Modal{% endcomment %}
+    <div class="modal fade package_modal" id="view_package_modal_{{ package.id }}">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-light text-dark">
+            <h3 class="modal-title">Package Detail</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <form action="{% url 'organizer:packages' %}" id="data_form{{ package.id }}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="package_id" id="{{ package.id }}" />
+              <div class="text_field">
+                <div class="">
+                  <label for="package_name">Package Name</label>
+                  <input type="text" name="package_name" id="package_name{{ package.id }}" value="{{ package.package_name }}" readonly />
+                </div>
+                <div class="">
+                  <label for="package_name">Price</label>
+                  <input type="number" name="package_price" id="package_price{{ package.package_id }}" value="{{ package.package_price }}" maxlength="6" readonly />
+                </div>
+                <div class="">
+                  <label for="package_name">Pacakage Inclusions</label>
+                  <textarea name="package_inclusion" id="package_inclusion{{ package.package_id }}" rows="5" readonly>{{ package.package_inclusion|join:'&#10;' }}</textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% comment %}End of view modal{% endcomment %}
+
+    {% comment %}Update modal{% endcomment %}
+    <div class="modal fade package_modal" id="update_package_modal_{{ package.id }}">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-light text-dark">
+            <h3 class="modal-title">Update Package</h3>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <form action="{% url 'organizer:update-package' package.id %}" id="update_form{{ package.id }}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="package_id" id="{{ package.id }}" />
+              <div class="text_field">
+                <div class="">
+                  <label for="package_name">Package Name</label>
+                  <input type="text" name="update_package_name" id="package_name{{ package.id }}" value="{{ package.package_name }}" required />
+                </div>
+                <div class="">
+                  <label for="package_name">Price</label>
+                  <input type="number" name="update_package_price" id="package_price{{ package.package_id }}" value="{{ package.package_price }}" maxlength="6" required />
+                </div>
+                <div class="">
+                  <label for="package_name">Pacakage Inclusions</label>
+                  <textarea name="update_package_inclusion" id="package_inclusion{{ package.package_id }}" rows="5" required>{{ package.package_inclusion|join:', ' }}</textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="submit" form="update_form{{ package.id }}" class="add_package_btn">Update Package <i class="bi bi-box-arrow-in-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% comment %}End of update modal{% endcomment %}
+
+    {% comment %}Delete Modal{% endcomment %}
+    <div class="modal fade package_modal" id="delete_package_modal_{{ package.id }}">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-light text-dark">
+            <h3 class="modal-title">Delete Package</h3>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Are you sure to delete <strong>{{ package.package_name }}</strong>?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <a href="{% url 'organizer:delete-package' package.id %}" class="btn btn-danger">Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% comment %}End of delete modal{% endcomment %}
+  {% endfor %}
+
+  {% if messages %}
+    <script>
+      
+      function confirmDelete(deleteUrl) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "This action cannot be undone!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!"
+        }).then((result => {
+          if (result.isConfirmed) {
+            window.location.href = deleteUrl;
+          }
+        }));
+      }
+      
+      document.addEventListener("DOMContentLoaded", function() {
+        {% for message in messages %}
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "{{ message }}",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        {% endfor %}
+      });
+    </script>
+  {% endif %}
+
+  
+{% endblock %}

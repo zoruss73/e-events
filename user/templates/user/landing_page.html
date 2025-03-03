@@ -1,0 +1,266 @@
+{% extends 'components1/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+  E-Events
+{% endblock %}
+
+{% block content %}
+  {% include 'components1/navbar.html' %}
+
+  <main class="main">
+    {% comment %}Hero Section{% endcomment %}
+    <section id="hero" class="hero section dark-background">
+      {% comment %} <img src="{% static 'assets1/img/world-dotted-map.png' %}" alt="" class="hero-bg" data-aos="fade-in" /> {% endcomment %}
+
+      <div class="container">
+        <div class="row gy-4 d-flex justify-content-between">
+          <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+            <h2 data-aos="fade-up">{{hero.hero_text}}</h2>
+            <p data-aos="fade-up" data-aos-delay="100">{{ hero.hero_description }}</p>
+            <div class="">
+              <a href="#packages" class="book-now-btn" data-aos="fade-up" data-aos-delay="100">Book now!</a>
+            </div>
+          </div>
+
+          <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
+            <img src="{% static 'assets1/img/Wedding-bro.png' %}" class="img-fluid mb-3 mb-lg-0" alt="" />
+          </div>
+        </div>
+      </div>
+    </section>
+    {% comment %}End of hero section{% endcomment %}
+
+    {% comment %}About Section{% endcomment %}
+    <section id="about" class="about section mt-2">
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-6 position-relative align-self-start  order-first" data-aos="fade-up" data-aos-delay="200">
+            
+            <img src="{{about.img.url}}" class="img-fluid" alt="sad" />
+          </div>
+
+          <div class="col-lg-6 content order-last " data-aos="fade-up" data-aos-delay="100">
+            <h3>About us</h3>
+            <p>{{about.description}}</p>
+            <ul>
+              <li>
+                <i class="bi bi-diagram-3"></i>
+                <div>
+                  <h5>Ullamco laboris nisi ut aliquip consequat</h5>
+                  <p>Magni facilis facilis repellendus cum excepturi quaerat praesentium libre trade</p>
+                </div>
+              </li>
+              <li>
+                <i class="bi bi-fullscreen-exit"></i>
+                <div>
+                  <h5>Ullamco laboris nisi ut aliquip consequat</h5>
+                  <p>Magni facilis facilis repellendus cum excepturi quaerat praesentium libre trade</p>
+                </div>
+              </li>
+              <li>
+                <i class="bi bi-broadcast"></i>
+                <div>
+                  <h5>Ullamco laboris nisi ut aliquip consequat</h5>
+                  <p>Magni facilis facilis repellendus cum excepturi quaerat praesentium libre trade</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    {% comment %}End of About Section{% endcomment %}
+
+    {% comment %}Project Section{% endcomment %}
+    <section id="projects" class="projects section">
+      <div class="conatiner section-title" data-aos="fade-up">
+        <span>Projects</span>
+        <h2>Projects</h2>
+        <p>Here are some of my projects.</p>
+      </div>
+
+      <div class="container">
+        <div class="row gy-4">
+          {% for project in  projects %}
+          <div class="col-lg-4 cold-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card">
+              <div class="card-img">
+                <img src="{{project.img.url}}" alt="" class="img-fluid" />
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="container text-center mt-4" data-aos="fade-up" data-aos-delay="100">
+        <a href="" class="view-more-btn">View More Projects</a>
+      </div>
+    </section>
+    {% comment %}End of Project Section{% endcomment %}
+
+    {% comment %}Start of packages Section{% endcomment %}
+    <section id="packages" class="packages section">
+      <div class="container section-title" data-aos="fade-up">
+        <span>Packages</span>
+        <h2>Packages</h2>
+        <p>Here are the top packages we offer.</p>
+      </div>
+
+      <div class="container">
+        <div class="row gy-4">
+          {% for package in packages %}
+          <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="package-item">
+              <h3>{{package.package_name}}</h3>
+              {% if package.package_type == "fixed" %}
+                <h4><sup>₱</sup>{{package.package_price|floatformat:0|intcomma}}</h4>
+              {% else %}
+              <h4><sup>₱</sup>Custom</h4>
+              {% endif %}
+              <ul>
+                {% if package.package_type == "fixed" %}
+                <li>
+                  <i class="bi bi-check"></i><span>Avail all of our services</span>
+                </li>
+                {% else %}
+                <li>
+                  <i class="bi bi-check"></i> <span>Create your own package</span>
+                </li>
+                {% endif %}
+                
+              </ul>
+              {% if package.package_type == "fixed" %}
+              <a href="#" class="buy-btn">View Package</a>
+              {% else %}
+              <a href="#" class="buy-btn">Get a quote</a>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+           {% comment %} <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
+            <div class="package-item">
+              <h3>Package 3</h3>
+              <h4><sup>₱</sup>0</h4>
+              <ul>
+                <li>
+                  <i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span>
+                </li>
+                <li>
+                  <i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span>
+                </li>
+                <li>
+                  <i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span>
+                </li>
+                <li class="na">
+                  <i class="bi bi-x"></i> <span>Pharetra massa massa ultricies</span>
+                </li>
+                <li class="na">
+                  <i class="bi bi-x"></i> <span>Massa ultricies mi quis hendrerit</span>
+                </li>
+              </ul>
+              <a href="#" class="buy-btn">View Package</a>
+            </div>
+          </div> {% endcomment %}
+
+        </div>
+      </div>
+    </section>
+    {% comment %}End of packages Section{% endcomment %}
+
+    {% comment %}Reviews Section{% endcomment %}
+    {% comment %}End of Reviews Section{% endcomment %}
+
+    {% comment %}Contact Us Section{% endcomment %}
+    <section id="contactus" class="contactus section">
+      <div class="container section-title" data-aos="fade-up">
+        <span>Contact Us</span>
+        <h2>Contact Us</h2>
+        <p>You can access us here.</p>
+      </div>
+
+      <div class="container" data-aos="fade-up">
+        <div class="row gy-4">
+          
+          <div class="col-xl-6">
+            <div class="row">
+
+              <div class="col-lg-6">
+                <div class="info-box card">
+                  <i class="bi bi-geo-alt"></i>
+                  <h3>Address</h3>
+                    <p>Vinzons, Camarines Norte</p>
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="info-box card">
+                  <i class="bi bi-telephone"></i>
+                  <h3>Address</h3>
+                  <p>Vinzons, Camarines Norte</p>
+                </div>
+              </div>
+
+              <div class="col-lg-6 mt-4">
+                <div class="info-box card">
+                  <i class="bi bi-envelope"></i>
+                  <h3>Address</h3>
+                  <p>Vinzons, Camarines Norte</p>
+                </div>
+              </div>
+
+              <div class="col-lg-6 mt-4">
+                <div class="info-box card">
+                  <i class="bi bi-clock"></i>
+                  <h3>Address</h3>
+                  <p>Vinzons, Camarines Norte</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-xl-6">
+            <div class="card p-4 info-box-email">
+              <form action="" method="post" class="email-from">
+                <div class="row gy-4">
+  
+                  <div class="col-md-6">
+                    <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                  </div>
+  
+                  <div class="col-md-6 ">
+                    <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                  </div>
+  
+                  <div class="col-md-12">
+                    <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+                  </div>
+  
+                  <div class="col-md-12">
+                    <textarea class="form-control" name="message" rows="6" placeholder="Message" required></textarea>
+                  </div>
+  
+                  <div class="col-md-12 text-center">
+                    {% comment %} <div class="loading">Loading</div>
+                    <div class="error-message"></div>
+                    <div class="sent-message">Your message has been sent. Thank you!</div> {% endcomment %}
+                    <button type="submit" class="send-email-btn">Send Message</button>
+                  </div>
+  
+                </div>
+              </form>
+            </div>
+  
+          </div>
+        </div>
+      </div>
+    </section>
+    {% comment %}End of Contact Us Section{% endcomment %}
+
+    {% comment %} Footer {% endcomment %}
+    {% include "components1/footer.html" %}
+    {% comment %} End footer {% endcomment %}
+  </main>
+{% endblock %}

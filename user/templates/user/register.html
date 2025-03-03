@@ -1,0 +1,93 @@
+{% extends 'components1/base.html' %}
+{% load static %}
+{% block title %}
+  E-Events | Register
+{% endblock %}
+
+{% block content %}
+  {% comment %} {% include "components1/navbar.html" %} {% endcomment %}
+  <main class="bg-login">
+    
+    <div class="container">
+      <section class="section login min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        {% comment %} <img src="{% static 'assets1/img/world-dotted-map.png' %}" alt="" class="login-bg-img"> {% endcomment %}
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+              <div class="d-flex justify-content-center py-4">
+                <a href="{% url 'user:landingpage' %}" class="logo d-flex align-items-center w-auto">
+                  <h3 class="text-light" style="font-weight: 700; font-size: 40px; font-family: z-index: 1; "Poppins", sans-serif;">E-Events</h3>
+                </a>
+              </div>
+
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="pt-4 pb-2">
+                    <h5 class="text-center pb-0 fs-4">CREATE YOUR ACCOUNT</h5>
+                    <p class="text-center small">Fill out the form below.</p>
+                  </div>
+                  <form class="row needs-validation" method="post" novalidate>
+                    {% csrf_token %}
+                
+                    {% for field in form %}
+                        <div class="mb-2 {% if field.name in 'first_name last_name' %} col-6 {% endif %}">
+                            {{ field.label_tag }}
+                            <input 
+                                type="{{ field.field.widget.input_type }}" 
+                                name="{{ field.name }}" 
+                                id="id_{{ field.name }}" 
+                                class="form-control {% if field.errors %} is-invalid {% endif %}" 
+                                value="{{ field.value|default_if_none:'' }}"
+                                placeholder="{{ field.field.widget.attrs.placeholder }}"
+                            >
+                
+                            <!-- Show Error Messages for All Fields -->
+                            {% if field.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in field.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                
+                    <div class="col-12 my-2">
+                        <button type="submit" class="btn btn-primary w-100 sd">Submit</button>
+                    </div>
+                  </form>
+                
+                
+                  <div class="col-12">
+                    <p class="small mb-0">
+                      Already have an account? <a href="{% url 'user:login' %}">Login here</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector("form").addEventListener("submit", function (e) {
+            Swal.fire({
+                title: "Processing...",
+                text: "Please wait while we process your registration.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+    });
+  </script>
+{% endblock %}

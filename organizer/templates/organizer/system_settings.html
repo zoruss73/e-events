@@ -1,0 +1,93 @@
+{% extends 'components/base.html' %}
+
+{% block title %}
+  E-Events | Settings
+{% endblock %}
+
+{% block content %}
+  {% include 'components/sidebar.html' %}
+
+  <section class="section system_settings mt-3">
+    <div class="card">
+      <div class="card-header py-2 px-3">
+        <ul class="nav nav-pills" id="pills-tab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pills-hero-tab" data-bs-toggle="pill" data-bs-target="#pills-hero" type="button" role="tab" aria-controls="pills-hero" aria-selected="true">Hero</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-about_us-tab" data-bs-toggle="pill" data-bs-target="#pills-about_us" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">About us</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-projects-tab" data-bs-toggle="pill" data-bs-target="#pills-projects" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">Projects</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-awards-tab" data-bs-toggle="pill" data-bs-target="#pills-awards" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">Awards</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-faq-tab" data-bs-toggle="pill" data-bs-target="#pills-faq" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">FAQ's</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">Profile</button>
+          </li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <div class="tab-content" id="pills-tab_content">
+          <div class="tab-pane fade show active" id="pills-hero" role="tabpanel" aria-labelledby="pills-hero" tabindex="0">
+            <form action="{% url 'organizer:update-hero' %}" enctype="multipart/form-data" method="post">
+              {% csrf_token %}
+              <br>
+              <div class="mb-3">
+                <label for="hero_text" class="form-label">Hero:</label>
+                <input type="text" class="form-control" required value="{{hero.hero_text}}" name="hero_text" id="hero_text" autocomplete="off"> 
+              </div>
+              <div class="mb-3">
+                <label for="hero_text" class="form-label">Description:</label>
+                <textarea name="hero_description" id="hero_description" class="form-control" rows="5" required>{{hero.hero_description}}</textarea>
+              </div>
+              <button type="submit" class="save_btn">Save</button>
+            </form>
+          </div>
+
+          <div class="tab-pane fade" id="pills-about_us" role="tabpanel" aria-labelledby="pills-about_us" tabindex="0">
+            <form action="{% url 'organizer:update-about' %}" enctype="multipart/form-data" method="post">
+              {% csrf_token %}
+              <br>
+              <div class="mb-3">
+                <label for="about_img" class="form-label d-block">About Image:</label>
+                <img src="{{about.img.url}}" alt="" class="img-fluid" width="200" id="preview_image">
+                <input type="file" class="form-control mt-2" accept="image/*" id="image_input" name="image_input">
+                
+              </div>
+              <div class="mb-3">
+                <label for="about_description" class="form-label">Description:</label>
+                <textarea name="about_description" id="about_description" class="form-control" rows="5" required>{{about.description}}</textarea>
+              </div>
+              <button type="submit" class="save_btn">Save</button>
+            </form>
+          </div>
+
+          <div class="tab-pane fade" id="pills-projects" role="tabpanel" aria-labelledby="pills-projects" tabindex="0">
+            <br>
+            <div class="text-end mb-2">
+              <button class="btn btn-primary vertical-middle">Add Project <i class="bi bi-plus"></i></button>
+            </div>
+            <div class="row gy-2">
+              {% for project in projects %}
+              <div class="col-lg-4 col-md-6">
+                <div class="card">
+                  <div class="card-img">
+                    <img src="{{project.img.url}}" alt="" class="img-fluid" data-aos="fade-up" data-aos-delay="100" />
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+{% endblock %}

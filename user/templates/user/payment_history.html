@@ -1,0 +1,155 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+  E-Events | Payment History
+{% endblock %}
+
+{% block content %}
+  {% include 'components1/sidebar.html' %}
+
+  <section class="section payment-history mt-5">
+    <div class="card">
+      <div class="card-header t-header text-light mb-4">
+        <h4 class="mb-0">Payment History</h4>
+        <small>See history of your payments</small>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-hover datatable">
+          <thead>
+            <tr>
+              <th>Payment Invoice</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in payments %}
+              <tr>
+                <td>{{ payment.transaction_id }}</td>
+                <td>₱ {{ payment.amount_paid|floatformat:0|intcomma }}</td>
+                <td>{{ payment.payment_date }}</td>
+                <td>
+                  <p class="d-inline-block text-light px-2 mb-0 {% if booking.payment_status == 'pending' %}
+                      bg-warning
+                    {% else %}
+                      bg-success
+                    {% endif %}"
+                    style="border-radius: 5px;">{{ payment.status|capfirst }}</p>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-primary download-invoice" data-id="{{ payment.transaction_id }}" data-amount="{{ payment.amount_paid }}" data-date="{{ payment.payment_date }}" data-package="{{ payment.booking.package.package_name }}"><i class="bi bi-download"></i> Download</button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="card" style="display: none; left: -9999px;" id="invoice-template">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-12">
+            <i class="far fa-building text-danger fa-6x float-start"></i>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xl-12">
+            <ul class="list-unstyled float-end">
+              <li style="color: #4154f1; font-size: 30px;font-weight: 600;">E-Events</li>
+              <li>Gojo Satorou</li>
+              <li>123-456-789</li>
+              <li>gojo@gmail.com</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row text-center">
+          <h3 class="text-uppercase text-center mt-3" style="font-size: 40px;">Invoice</h3>
+          <p id="invoice-transaction" class="mb-0"></p>
+          <p id="invoice-date"></p>
+        </div>
+
+        <div class="row mx-3">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Package</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="invoice-package"></td>
+                <td id="invoice-amount_paid"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-xl-8">
+            <p class="float-end text-center" id="total_amount_paid" style="font-size: 30px; color: red; font-weight: 400;font-family: Arial, Helvetica, sans-serif;">
+              Total:<span></i>₱ </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+  const { jsPDF } = window.jspdf;
+
+  document.querySelectorAll('.download-invoice').forEach(button => {
+    button.addEventListener('click', function () {
+      let transactionId = this.getAttribute("data-id");
+      let amount = this.getAttribute("data-amount");
+      let date = this.getAttribute("data-date");
+      let package_selected = this.getAttribute("data-package");
+
+      // Fill the template with data
+      document.getElementById("invoice-transaction").innerText = transactionId;
+      document.getElementById("invoice-amount_paid").innerText = "₱ " + amount;
+      document.getElementById("invoice-date").innerText = date;
+      document.getElementById("invoice-package").innerText = package_selected;
+      document.getElementById("total_amount_paid").innerHTML = `<strong>Total: ₱ ${amount}</strong>`;
+
+      let invoiceElement = document.getElementById("invoice-template");
+      invoiceElement.style.display = "block";
+      // Temporarily make the element visible
+      //invoiceElement.style.visibility = "visible";
+      //invoiceElement.style.position = "static";
+
+      setTimeout(() => {
+        html2canvas(invoiceElement, {
+          scale: 2,
+          useCORS: true,
+          logging: true
+        }).then(canvas => {
+          let doc = new jsPDF("p", "mm", "a4");
+          doc.addImage(canvas.toDataURL("image/png"), "PNG", 10, 10, 190, 0);
+          doc.save(`Invoice_${package_selected}_payment.pdf`);
+          invoiceElement.style.display = "none";
+          // Hide the template again
+          //invoiceElement.style.visibility = "hidden";
+          //invoiceElement.style.position = "absolute";
+        });
+      }, 50); // Shorter delay for better responsiveness
+    });
+  });
+});
+
+  </script>
+{% endblock %}

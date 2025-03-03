@@ -1,0 +1,46 @@
+{% extends 'base1.html' %}
+{% load humanize %}
+{% block title %}
+  E-Events | Payment
+{% endblock %}
+
+{% block content %}
+  {% include 'components1/sidebar.html' %}
+
+  <section class="section payment mt-5 d-flex align-items-center justify-content-center">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-7">
+          <div class="card shadow-lg mb-4">
+            <div class="card-header">
+              <h4>Booking Details:</h4>
+            </div>
+            <div class="card-body">
+              {% if booking_data %}
+                <div class="col-12 mt-3">
+                  <label for="package_name" class="form-label">Package:</label>
+                  <input type="text" readonly value="{{ booking_data.package.package_name }}" class="form-control" />
+                </div>
+                <div class="col-12 mt-3">
+                  <label for="package_name" class="form-label">Wedding Date:</label>
+                  <input type="text" readonly value="{{ booking_data.wedding_date }}" class="form-control" />
+                </div>
+                <div class="col-12 mt-3">
+                  <label for="package_name" class="form-label">Price:</label>
+                  <input type="text" readonly value="{{ booking_data.package.package_price|floatformat:0|intcomma }}" class="form-control" />
+                </div>
+                <div class="col-12 mt-3">
+                  <label for="package_name" class="form-label">To pay (20%):</label>
+                  <input type="text" readonly value="{{ booking_data.package.package_downpayment|floatformat:0|intcomma }}" class="form-control" />
+                </div>
+                <div class="col-12 text-end mt-3">
+                  {{paypal.render}}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

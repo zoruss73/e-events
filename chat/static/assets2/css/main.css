@@ -1,0 +1,254 @@
+:root {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Open Sans", sans-serif;
+    background: #f6f9ff;
+    color: #444444;
+}
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    width: 400px;
+    z-index: 996;
+    height: 100%;
+    transition: all 0.3s;
+    padding: 20px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #aab7cf transparent;
+    box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
+    background-color: #ffffff;
+}
+
+
+.sidebar h3 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #4154f1;
+}
+
+.client_list-list {
+    -moz-transition: .5s;
+    -o-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s
+}
+
+.client-list .chat-list li {
+    padding: 10px 15px 0 15px;
+    list-style: none;
+    border-radius: 3px;
+}
+
+.client-list .chat-list li:hover a{
+    color: #4154f1;
+    background: #f6f9ff;
+}
+
+.client-list .chat-list .name {
+    font-size: 15px;
+}
+
+.client-list .chat-list img {
+    width: 45px;
+    border-radius: 50%;
+}
+
+.client-list img {
+    float: left;
+    border-radius: 50%;
+}
+
+.client-list .about {
+    float: left;
+    padding-left: 8px;
+}
+
+.client-list .about a{
+    text-decoration: none;
+    color: #012970;
+}
+
+.client-list .about:hover, .client-list .clearfix {
+    cursor: pointer;
+}
+
+.client-list .last_chat_time, .chat-header .email {
+    color: #999;
+    font-size: 13px;
+}
+
+@media (min-width: 1200px) {
+    #main {
+        margin-left: 400px;
+    }
+
+
+}
+
+@media (max-width: 991px) {
+    .sidebar {
+        left: 0;
+        width: 100%;
+        position: fixed;
+        height: 100%;
+        transition: left 0.3s ease-in-out;
+        z-index: 1000;
+    }
+
+    .sidebar.hidden {
+        left: -100%;
+    }
+
+    #main {
+        display: none;
+    }
+
+    #main.visible {
+        display: block;
+        width: 100%;
+    }
+
+    /* Show Back Button Only When Sidebar is Hidden */
+    #backToSidebar.show {
+        display: inline-block;
+    }
+}
+
+
+
+.chat-header {
+    background: #ffffff;
+    padding: 10px 20px;
+    box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
+}
+
+.chat .chat-header img {
+    width: 45px;
+    border-radius: 50%;
+}
+
+
+.chat .chat-history {
+    padding: 20px;
+    border-bottom: 2px solid #ffffff;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #aab7cf transparent;;
+    max-height: calc(100vh - 140px);
+}
+
+.chat .chat-history ul {
+    padding: 0;
+}
+
+.chat .chat-history ul li {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.chat .chat-history ul li:last-child {
+    margin-bottom: 0px;
+}
+
+.chat .chat-history .message-data img {
+    border-radius: 40px;
+    width: 40px;
+}
+
+.chat .chat-history .message-data-time {
+    color: #434651;
+    padding-left: 6px;
+}
+
+.chat .chat-history .message {
+    color: #444;
+    padding: 15px;
+    line-height: 26px;
+    font-size: 16px;
+    border-radius: 7px;
+    display: inline-block;
+    position: relative;
+    max-width: 55%;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+
+
+.chat .chat-history .message:after {
+    bottom: 100%;
+    left: 7%;
+    border: solid transparent;
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: #fff;
+    border-width: 10px;
+    margin-left: -10px
+}
+
+.chat .chat-history .my-message {
+    background: #efefef
+}
+
+.chat .chat-history .my-message:after {
+    bottom: 100%;
+    left: 30px;
+    border: solid transparent;
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: #efefef;
+    border-width: 10px;
+    margin-left: -10px
+}
+
+.chat .chat-history .other-message {
+    background: #4154f1;
+    color: white;
+    text-align: right;
+} 
+
+.chat .chat-history .other-message:after {
+    border-bottom-color: #e8f1f3;
+    left: 93%
+}
+
+.chat .chat-message {
+    padding: 25px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);;
+}
+
+.online,
+.offline,
+.me {
+    margin-right: 2px;
+    font-size: 8px;
+    vertical-align: middle
+}
+
+.float-right {
+    float: right
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+.receiver_img {
+    width: 40px;
+    border: 50%;
+}

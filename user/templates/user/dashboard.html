@@ -1,0 +1,153 @@
+{% extends 'base1.html' %}
+{% load humanize %}
+{% load custom_filters %}
+{% block title %}
+  E-Events | Dashboard
+{% endblock %}
+
+{% block content %}
+  {% include 'components1/sidebar.html' %}
+
+  <section class="section dashboard">
+    <div class="row">
+        
+      
+      <div class="col-xxl-4 col-md-6">
+        <div class="card info-card sales-card d-flex justify-content-center">
+          <div class="card-body">
+            <h4 class="card-title">Booking/s:</h4>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-book"></i>
+              </div>
+              <div class="ps-3">
+                <h3>{{bookings_count}}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} |subtract:bookings.remaining_balance|floatformat:0|intcomma {% endcomment %}
+      
+      <div class="col-xxl-4 col-md-6">
+        <div class="card info-card sales-card d-flex justify-content-center">
+          <div class="card-body">
+            <h4 class="card-title">Total Payments:</h4>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-cash"></i>
+              </div>
+              <div class="ps-3">
+                
+                <h3>₱ {{ bookings.package_price|subtract:bookings.remaining_balance|floatformat:0|intcomma }}</h3>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-4 col-md-6">
+        <div class="card info-card sales-card d-flex justify-content-center">
+          <div class="card-body">
+            <h4 class="card-title">Remaining Balance:</h4>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-cash"></i>
+              </div>
+              <div class="ps-3">
+                <h3>₱ {{ bookings.remaining_balance|floatformat:0|intcomma }}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-8 col-md-6">
+        <div class="card info-card sales-card d-flex justify-content-center">
+          <div class="card-body">
+            <h4 class="card-title">Countdown:</h4>
+            <div class="row text-center mt-3" id="countdown">
+              <div class="col-3">
+                <h3 id="days" class="display-4">0</h3>
+                <p>Days</p>
+              </div>
+              <div class="col-3">
+                <h3 id="hours" class="display-4">0</h3>
+                <p>Hours</p>
+              </div>
+              <div class="col-3">
+                <h3 id="minutes" class="display-4">0</h3>
+                <p>Minutes</p>
+              </div>
+              <div class="col-3">
+                <h3 id="seconds" class="display-4">0</h3>
+                <p>Seconds</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} <div class="col-xxl-5 col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">Recent Activity:</div>
+            <div class="activity">
+
+              <div class="activity-item d-flex">
+                <div class="activite-label">32 min</div>
+                <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                <div class="activity-content">
+                  Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
+                </div>
+              </div>
+
+              <div class="activity-item d-flex">
+                <div class="activite-label">32 min</div>
+                <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                <div class="activity-content">
+                  Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
+                </div>
+              </div>
+              
+
+            </div>
+          </div>
+        </div>
+      </div> {% endcomment %}
+
+    </div>
+  </section>
+
+  <script>
+    const wedding_date = new Date("{{ bookings.wedding_date|date:'Y-m-d' }}  00:00:00").getTime();
+
+    const x = setInterval(function(){
+      const now = new Date().getTime();
+
+      const timeleft = wedding_date - now;
+
+      const days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
+      document.getElementById("hours").innerHTML = hours.toString().padStart(2, '0');
+      document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
+      document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+
+      if (timeleft < 0) {
+        clearInterval(x);
+        document.getElementById("days").innerHTML = "00";
+        document.getElementById("hours").innerHTML = "00";
+        document.getElementById("minutes").innerHTML = "00";
+        document.getElementById("seconds").innerHTML = "00";
+      }
+
+    }, 50)
+
+  </script>
+{% endblock %}

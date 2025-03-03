@@ -1,0 +1,60 @@
+{% extends "base1.html" %}
+{% load custom_filters %}
+{% block title %}
+E-Events | Bookings
+{% endblock title %}
+{% load humanize %}
+{% block content %}
+{% include "components1/sidebar.html" %}
+
+
+<section class="section user-booking mt-5">
+    <div class="text-end mb-3">
+        <a href="{% url 'user:create-booking' %}" class="btn btn-primary">Create Booking</a>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header t-header text-light mb-4">
+        <h4>User bookings</h4>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-hover datatable">
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Package</th>
+              {% comment %} <th>Booking Date</th> {% endcomment %}
+              <th>Wedding Date</th>
+              <th>Paid</th>
+              <th>Balance</th>
+              {% comment %} <th>Package Price</th> {% endcomment %}
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for booking in bookings %}
+            <tr>
+              <td>{{booking.booking_id|truncatechars:10}}</td>
+              <td>{{booking.package.package_name}}</td>
+              {% comment %} <td>{{booking.booking_date|date:"F j, Y"}}</td> {% endcomment %}
+              <td>{{booking.wedding_date|date:"F j, Y"}}</td>
+              <td>₱ {{booking.package_price|subtract:booking.remaining_balance|floatformat:0|intcomma}}</td>
+              <td>₱ {{booking.remaining_balance|floatformat:0|intcomma}}</td>
+              {% comment %} <td>{{booking.package_price|floatformat:0|intcomma}}</td> {% endcomment %}
+              <td>
+                <p class="d-inline-block px-2 mb-0 {% if booking.payment_status == "pending" %}bg-warning {% else %}bg-success{% endif %}" style="border-radius: 5px;">{{booking.payment_status|capfirst}}</p>
+              </td>
+              <td>
+                <a href="" class="bg-info px-2 text-dark " style="border-radius: 5px;">View</a>
+                <a href="" class="bg-success px-2 text-light" style="border-radius: 5px;">Edit</a> 
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+</section>
+
+
+{% endblock content %}

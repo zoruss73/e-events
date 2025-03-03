@@ -1,0 +1,55 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% block title %}
+  E-Events | Activity Logs
+{% endblock %}
+
+{% block content %}
+  {% include 'components/sidebar.html' %}
+
+  <section class="section activity-logs mt-5">
+    <div class="card mb-4">
+      <div class="card-header mb-4 t-header">
+        <i class="bi bi-table"></i>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-hover datatable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Action</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Julius Orit</td>
+              <td>2/18/2025</td>
+              <td>10:00 AM</td>
+              <td>
+                <p class="bg-success d-inline-block px-2 text-light action">Added</p>
+              </td>
+              <td>Created a new package</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Julius Orit</td>
+              <td>2/14/2025</td>
+              <td>12:00 AM</td>
+              <td>
+                <p class="bg-warning d-inline-block px-2 text-dark action">Updated</p>
+              </td>
+              <td>Update package #1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  
+{% endblock %}

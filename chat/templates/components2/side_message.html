@@ -1,0 +1,26 @@
+{% load static %}
+<aside class="sidebar" id="sidebar">
+    <h3>Messages</h3>
+    <div class="input-group">
+        <span class="input-group-text bi bi-search" id="basic-addon1"></span>
+        <input type="search" name="search_client" id="search_client" class="form-control" placeholder="Search client...">
+    </div>
+
+    <div class="client-list mt-3" id="c-list">
+        <ul class="list-unstyled chat-list mt-2 mb-0">
+            {% for item  in  user_last_messages %}
+            {% if request.username != item.user.username and not item.user.is_superuser%}
+            <li class="clearfix rawr">
+                <img src="{% static 'assets2/img/avatar.svg' %}" alt="" >
+                <div class="about">
+                    <a href=""><strong>{{item.user.first_name}} {{item.user.last_name}}</strong></a>
+                    <div class="last_chat_time">{{ item.last_message.timestamp|timesince }} ago</i></div>
+                </div>
+            </li>
+            <hr>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+</aside>
