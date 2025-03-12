@@ -1389,3 +1389,9 @@ h6 {
   font-family: "Open Sans", sans-serif;
   color: #012970;
 }
+
+@media (max-width: 1080px) {
+  .service_included {
+    height: 100px;
+  }
+}

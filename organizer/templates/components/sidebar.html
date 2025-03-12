@@ -229,11 +229,27 @@
     </li>
     <!-- End Dashboard Nav -->
 
-    <li class="nav-item">
+    {% comment %} <li class="nav-item">
       <a href="{% url 'organizer:packages' %}" class="nav-link collapsed">
         <i class="bi bi-box"></i>
         <span>Packages</span>
       </a>
+    </li> {% endcomment %}
+
+    <li class="nav-item">
+      <a href="" class="nav-link collapsed" data-bs-target="#offers-nav" data-bs-toggle="collapse">
+        <i class="bi bi-box"></i>
+        <span>Offers</span>
+        <i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="offers-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'organizer:services' %}"><i class="bi bi-circle"></i><span>Services</span></a>
+        </li>
+        <li>
+          <a href="{% url 'organizer:packages' %}"><i class="bi bi-circle"></i><span>Packages</span></a>
+        </li>
+      </ul>
     </li>
 
     <li class="nav-item">
@@ -244,6 +260,13 @@
     </li>
 
     <li class="nav-item">
+      <a href="{% url 'organizer:payment-history' %}" class="nav-link collapsed">
+        <i class="bi bi-credit-card"></i>
+        <span>Payment History</span>
+      </a>
+    </li>
+
+    {% comment %} <li class="nav-item">
       <a href="" class="nav-link collapsed" data-bs-target="#payments-nav" data-bs-toggle="collapse">
         <i class="bi bi-credit-card"></i>
         <span>Payments</span>
@@ -257,7 +280,7 @@
           <a href="{% url 'organizer:payment-history' %}"><i class="bi bi-circle"></i><span>Payment History</span></a>
         </li>
       </ul>
-    </li>
+    </li> {% endcomment %}
 
     <li class="nav-item">
       <a href="{% url 'organizer:clients' %}" class="nav-link collapsed" >

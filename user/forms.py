@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
-from .models import Booking
+from .models import Booking, Services
 from organizer.models import Package
 
 class RegistrationForm(forms.ModelForm):
@@ -129,22 +129,30 @@ class BookingForm(forms.ModelForm):
     wedding_date = forms.DateField(
         required=True,
         label="Pick your wedding date:",
-        widget= forms.DateInput(attrs={
+        widget=forms.DateInput(attrs={
             'class': 'form-control',
-            'type':'date',
+            'type': 'date',
         }),
-        
     )
-    
+
     package = forms.ModelChoiceField(
         required=True,
         label="Select package: ",
-        queryset= Package.objects.all(),
+        queryset=Package.objects.all(),
         widget=forms.Select(attrs={
             'class': 'form-select'
         })
     )
-    
+
+    services = forms.ModelMultipleChoiceField(
+        required=False,
+        label="Select additional services:",
+        queryset=Services.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={
+            
+        }),
+    )
+
     class Meta:
         model = Booking
-        fields = ['wedding_date', 'package']
+        fields = ['wedding_date', 'package', 'services']

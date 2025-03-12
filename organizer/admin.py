@@ -2,8 +2,12 @@ from django.contrib import admin
 from . import models
 # Register your models here.
 
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ('service_name', 'service_price')
+admin.site.register(models.Services, ServiceAdmin)
+
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ('package_name', 'package_price')
+    list_display = ('package_name', )
 admin.site.register(models.Package, PackageAdmin)
 
 class HeroAdmin(admin.ModelAdmin):

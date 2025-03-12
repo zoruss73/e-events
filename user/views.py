@@ -19,11 +19,12 @@ from datetime import date
 from decimal import Decimal
 from organizer.models import Hero, About, Project
 from django.contrib.auth.hashers import make_password
-from organizer.models import Package
-from .models import Booking, Payment
+from organizer.models import Package, Services
+from .models import Booking, Payment, Notification
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 # Paypal
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
@@ -31,17 +32,45 @@ import uuid
 
 # Create your views here.
 
-def notifyOrganizer(request):
+def notifyOrganizer(request, booking):
     organizer_user = User.objects.filter(is_staff=True, is_superuser=False).first()
+    
+    if organizer_user:
+        message = f"You received a new booking from {request.user.username}!"
 
-    mail_subject = f"You received a new booking!"
-    message = render_to_string("template_organizer_message.html", {
-        'client': request.user,
-        'organizer': organizer_user,
-    })
-    email = EmailMessage(mail_subject, message, to=[organizer_user.email])
-    if email.send():
-        messages.success(request, 'Booking confirmed successfully!')
+        # Save notification in the database
+        notification = Notification.objects.create(user=organizer_user, message=message)
+
+        # Send real-time WebSocket notification
+        # channel_layer = get_channel_layer()
+        # group_name = f"notifications_{organizer_user.id}"
+
+        # async_to_sync(channel_layer.group_send)(
+        #     group_name,
+        #     {
+        #         "type": "send_notifications",
+        #         "message": notification.message,
+        #     }
+        # )
+
+        # Send email notification (optional)
+        mail_subject_user = "Booking Confirmed"
+        email_message_user = render_to_string("template_user_message.html", {
+            "client": request.user,
+            "booking": booking,
+        })
+
+        mail_subject = "You received a new booking!"
+        email_message = render_to_string("template_organizer_message.html", {
+            "client": request.user,
+            "organizer": organizer_user,
+        })
+        email_user = EmailMessage(mail_subject_user, email_message_user, to=[request.user.email])
+        email = EmailMessage(mail_subject, email_message, to=[organizer_user.email])
+        if email.send() and email_user.send():
+            messages.success(request, "Booking confirmed successfully!")
+                    
+
     
 def activate(request, uidb64, token):
     User = get_user_model()
@@ -244,26 +273,31 @@ def booking(request):
 def create_booking(request):
     if request.user.is_authenticated:
         booked_dates = [date.strftime("%Y-%m-%d") for date in Booking.objects.values_list('wedding_date', flat=True)]
+        services = Services.objects.all()   
         print("Booked dates: ",booked_dates)
         if request.method == "POST":
             form = BookingForm(request.POST)
-            
             if form.is_valid():
-                booking_data = form.cleaned_data
+                booking_data = form.cleaned_data       
+                print(booking_data)
                 package = booking_data['package']
+                services = booking_data['services']
+                print(package.package_name.lower())
+                if package.package_name.lower() == "all-in-one package":
+                    services = Services.objects.all()
+                
+                booking_data['package'] = package.package_name
                 booking_data['username'] = request.user.username
                 booking_data['wedding_date'] = booking_data['wedding_date'].strftime("%Y-%m-%d")
-                booking_data['package'] = {
-                    'id': package.id,
-                    'package_price': float(package.package_price),
-                    'package_name' : package.package_name,
-                    'package_downpayment': float(package.package_downpayment)
-                }
+                booking_data['services'] = [(service.service_name) for service in services]
+                booking_data['service_price'] = float(sum(service.service_price for service in services))
+                booking_data['booking_downpayment'] = float(booking_data['service_price'] * 0.2)
+                print(booking_data)
                 request.session['booking_data'] = booking_data
                 return redirect('user:proceed-to-payment')
         else:
             form = BookingForm()
-        return render(request, 'user/create_booking.html', {'form':form, 'booked_dates':booked_dates})
+        return render(request, 'user/create_booking.html', {'form':form, 'booked_dates':booked_dates, 'services':services})
 
     return redirect('user:landingpage')
 
@@ -271,13 +305,13 @@ def proceed_to_payment(request):
     booking_data = request.session.get('booking_data')
     print(booking_data)
     host = request.get_host()
-    print(booking_data['package']['package_name'])
+    print(booking_data['package'])
     invoice_id = uuid.uuid4()
     booking_id = uuid.uuid4()
     paypal_checkout = {
         'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': booking_data['package']['package_downpayment'],
-        'package_name':booking_data['package']['package_name'],
+        'amount': booking_data['booking_downpayment'],
+        'package_name':booking_data['package'],
         'invoice': invoice_id,
         'currency_code': 'PHP',
         'notify_url': f"http://{host}{reverse('paypal-ipn')}",
@@ -302,31 +336,36 @@ def booking_confirmed(request):
     
     if booking_data:
         try:
-            package = Package.objects.get(id=booking_data['package']['id'])
-
+            package = Package.objects.get(package_name=booking_data['package'])
+            services = Services.objects.filter(service_name__in=booking_data['services'])
+            
             booking = Booking.objects.create(
                 booking_id=booking_id,
                 user=request.user, 
                 wedding_date=booking_data['wedding_date'],
+                is_confirmed = True,
                 package=package,
-                package_price=booking_data['package']['package_price'],
+                
+                package_price=booking_data['service_price'],
                 payment_status = "pending",
-                remaining_balance = Decimal(booking_data['package']['package_price']) - Decimal(booking_data['package']['package_downpayment'])
+                remaining_balance = booking_data['service_price'] - booking_data['booking_downpayment']
             )
+            
+            booking.selected_services.set(services)
             booking.save()
             
             payment = Payment.objects.create(
                 booking = booking,
                 user = request.user,
                 transaction_id = txn_id,
-                amount_paid = booking_data['package']['package_downpayment'],
                 status = "successful",
+                amount_paid = booking_data['booking_downpayment'],
                 payment_date = now()
             )
             payment.save()
 
 
-            notifyOrganizer(request)
+            notifyOrganizer(request, booking)
             del request.session['booking_data']
 
         except Exception as e:

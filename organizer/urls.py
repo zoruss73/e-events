@@ -7,9 +7,13 @@ app_name = "organizer"
 
 urlpatterns = [
     path('dashboard/', views.index, name="dashboard"),
+    
     path('packages/', views.packages, name="packages"),
     path('update-package/<int:id>/', views.update_package, name="update-package"),
     path('delete-package/<int:id>/', views.delete_package, name="delete-package"),
+    
+    path('services/', views.services, name="services"),
+    
     path('bookings/', views.bookings, name="bookings"),
     path('confirm-payments/', views.confrim_payments, name="confirm-payments"),
     path('payment-history/', views.payment_history, name="payment-history"),

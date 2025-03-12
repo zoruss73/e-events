@@ -1,5 +1,6 @@
 {% extends 'components/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block title %}
   E-Events | Packages
 {% endblock %}
@@ -7,41 +8,25 @@
 {% block content %}
   {% include 'components/sidebar.html' %}
 
-   <section class="section packages mt-5 px-3">
-    <div class="card mb-4">
-      <div class="card-header mb-4 t-header d-flex align-items-center justify-content-between">
-        <i class="bi bi-table"></i>
-        {% comment %} <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add_package">
-          <i class="bi bi-plus"></i>
-          <span>Add Package</span>
-        </a> {% endcomment %}
+  <section class="section packages mt-5 px-3">
+    <div class="row">
+      {% for package in packages %}
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">{{ package.package_name }}</h3>
+            {% if package.package_name != "Customize Package" %}
+            <h4><sup>₱</sup>{{service_price|floatformat:0|intcomma}}</h4>
+            {% else %}
+            <h4><sup>₱</sup> Custom Price</h4>
+            {% endif %}
+            <div class="text-end">
+              <button class="btn btn-primary">View</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-body table-responsive">
-        <table class="table table-hover text-center">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Package Name</th>
-              <th>Price</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for package in packages %}
-              <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ package.package_name }}</td>
-                <td>{{ package.package_price }}</td>
-                <td class="d-flex justify-content-center gap-2">
-                  <button class="btn btn-info view" data-bs-toggle="modal" data-bs-target="#view_package_modal_{{ package.id }}"><i class="bi bi-eye"></i></button>
-                  <button class="btn btn-warning view" data-bs-toggle="modal" data-bs-target="#update_package_modal_{{ package.id }}"><i class="bi bi-pen"></i></button>
-                  {% comment %} <button class="btn btn-danger view" data-bs-toggle="modal" data-bs-target="#delete_package_modal_{{ package.id }}"><i class="bi bi-trash3"></i></button> {% endcomment %}
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+      {% endfor %}
     </div>
   </section> 
 

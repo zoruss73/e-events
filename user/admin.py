@@ -9,3 +9,7 @@ admin.site.register(models.Booking, BookingAdmin)
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('booking_id', 'status', 'amount_paid')
 admin.site.register(models.Payment, PaymentAdmin)
+
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('message', 'is_read', 'created_at')
+admin.site.register(models.Notification, NotificationAdmin)

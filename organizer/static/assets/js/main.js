@@ -85,7 +85,7 @@
         const dropdownPath = dropdownLink.getAttribute("href");
   
         if (currentPath === dropdownPath) {
-          dropdownLink.classList.add("active"); // Mark child as active
+          dropdownLink.classList.add("active");
   
           let parentNav = dropdownLink.closest(".nav-content");
           if (parentNav) {
@@ -93,11 +93,22 @@
             if (parentLink && parentLink.classList.contains("nav-link")) {
               parentLink.classList.remove("collapsed");
               parentLink.classList.add("active");
-              parentNav.classList.add("show"); // Keep dropdown open
+              parentNav.classList.add("show");
             }
           }
         }
       });
+    });
+
+    document.getElementById("image_input").addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader(); 
+        reader.onload = function(e) {
+          document.getElementById("preview_image").src = e.target.result; 
+        };
+        reader.readAsDataURL(file); 
+      }
     });
 
   /**
@@ -369,15 +380,6 @@
   }
 
 
-  document.getElementById("image_input").addEventListener("change", function(event) {
-    const file = event.target.files[0]; // Get the selected file
-    if (file) {
-      const reader = new FileReader(); // Create a FileReader
-      reader.onload = function(e) {
-        document.getElementById("preview_image").src = e.target.result; // Set the image source
-      };
-      reader.readAsDataURL(file); // Convert file to Data URL
-    }
-  });
+
 
 })();

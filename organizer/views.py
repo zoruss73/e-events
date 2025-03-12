@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from . import models
 import re
 from decimal import Decimal
+from django.db.models import Sum
 
 # Logics
 def separate_comma(to_array):
@@ -19,18 +20,11 @@ def index(request):
 
 def packages(request):
     package = models.Package.objects.all().order_by('-id')
-    if request.method == "POST":
-        package_name = request.POST.get('package_name')
-        package_price = request.POST.get('package_price')
-        package_inclusion = separate_comma(request.POST.get('package_inclusion'))
-        
-        package = models.Package(package_name=package_name, package_price=package_price, package_inclusion=package_inclusion)
-        package.save()
-        messages.success(request, "Package addedd successfully!")
-        
-        return redirect('organizer:packages')
-    else:
-        return render(request, 'organizer/packages.html', {'packages': package})
+    all_service_price = models.Services.objects.aggregate(total=Sum('service_price'))['total']
+    return render(request, 'organizer/packages.html', {'packages': package, 'service_price':all_service_price})
+
+def services(request):
+    return render(request, 'organizer/services.html')
     
 def update_package(request, id):
     if request.method == 'POST':

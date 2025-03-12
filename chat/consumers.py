@@ -1,8 +1,10 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
 from .models import *
-from django.contrib.auth.models import User
+from user.models import Notification
+from django.contrib.auth.models import User, AnonymousUser
 
 class ChatConsumer(AsyncWebsocketConsumer):
     
@@ -60,4 +62,39 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def get_receiver_user(self):
         return User.objects.get(username=self.room_name)
     
-        
+class NotificationConsumer(AsyncWebsocketConsumer):
+
+    async def connect(self):
+        if not self.scope["user"].is_authenticated:
+            await self.close()
+        else:
+            self.user = self.scope["user"]
+            self.group_name = f"notifications_{self.user.id}"
+            
+            await self.channel_layer.group_add(self.group_name, self.channel_name)
+            await self.accept()
+
+            # Send unread notifications when the user connects
+            await self.send_unread_notifications()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+
+    async def send_notifications(self, event):
+        """
+        WebSocket function that sends a notification to the frontend.
+        """
+        await self.send(text_data=json.dumps({"message": event["message"]}))
+
+    async def send_unread_notifications(self):
+        """
+        Fetch unread notifications from the database when the user connects.
+        """
+        notifications = await database_sync_to_async(self.get_unread_notifications)()
+        for notification in notifications:
+            await self.send(text_data=json.dumps({"message": notification.message}))
+
+    @database_sync_to_async
+    def get_unread_notifications(self):
+        return Notification.objects.filter(user=self.user, is_read=False)
+

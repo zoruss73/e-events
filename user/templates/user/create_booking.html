@@ -13,21 +13,29 @@
         <a href="{% url 'user:booking' %}"><i class="bi bi-arrow-left"></i></a>
       </div>
       <div class="card-body">
-        <form method="post" class="row g-3">
+        <form method="post" class="row g-3" id="booking_form">
           {% csrf_token %}
-          {% for field in form %}
-            <div class="col-lg-6">
-              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-              {{ field }}
-            </div>
-          {% endfor %}
-          <div class="mb-3" style="display: none;" id="custom-text-area">
-            <label for="exampleFormControlTextarea1" class="form-label">Service:</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
+          
+          <div class="col-lg-6">
+            <label for="id_wedding_date" class="form-label">Select Wedding Date:</label>
+            {{form.wedding_date}}
           </div>
+          <div class="col-lg-6">
+            <label for="id_wedding_package" class="form-label">Select Package:</label>
+            {{form.package}}
+          </div>
+
+          <div class="col-lg-12" id="custom-services" style="display: none;">
+            <label class="form-label d-block">Select services:</label>
+            {% for service in form.services %}
+              <input type="checkbox" class="btn-check " id="service_{{ forloop.counter }}" name="{{ form.services.html_name }}" value="{{ service.data.value }}" {% if service.data.selected %}checked{% endif %}>
+              <label for="service_{{ forloop.counter }}" class="btn btn-outline-primary me-2">{{ service.choice_label }}</label>
+            {% endfor %}
+          </div>
+
           <div class="col-lg-6 mt-3 checkbox-group">
             <input type="checkbox" class="form-check-input" required id="terms_and_conditions" />
-            <label for="terms_and_conditions" class="form-check-label">I have read and accept the <a href="#">Tems and Conditions</a></label>
+            <label for="terms_and_conditions" class="form-check-label">I have read and accept the <a href="#" data-bs-toggle="modal" data-bs-target="#moa_modal">Memorandum of Agreement</a></label>
           </div>
           <div class="col-lg-6 mt-3">
             <button type="submit" class="sd float-end w-md-100">Next</button>
@@ -36,6 +44,44 @@
       </div>
     </div>
   </section>
+
+  <div class="modal" tabindex="-1" id="moa_modal">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Memorandum of Agreement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This <strong>Memorandum of Agreement (MOA)</strong> is made and entered into this <strong>11th</strong> day of <strong>March, 2025</strong>, by and between:</p>
+          <p><strong>E-Events</strong>, a duly registered event planning business, with business address at <strong>Santo Domingo, Vinzons Camarines Norte</strong>, represented herein by <strong>Elmer Largo Jr.</strong>, hereinafter referred to as the <strong>"Wedding Coordinator";</strong></p>
+          <p>AND</p>
+          <p><strong>{{request.user.first_name}} {{request.user.last_name}}</strong>, hereinafter reffered to as the <strong>"Client"</strong></p>
+          <p><strong>WHEREAS: </strong></p>
+          <p>1. The Client wishes to engage the services of the Wedding Coordinator for the planning, organizing, and execution of their wedding event.</p>
+          <p>2. The Wedding Coordinator agrees to provide such services under the terms and conditions outlined in this agreement.</p>
+          <p><strong>NOW, THEREFORE, in consideration of the mutual promises and covenants contained herein, the parties agree as follows:</strong></p>
+          <h4>1. Scope of Services</h4>
+          <p>The Wedding Coordinator shall provide the following services:</p>
+          <ul>
+            <li>Full wedding planning, including but not limited to venue selection, supplier coordination, and timeline management.</li>
+            <li>On-the-day wedding coordination to ensure the smooth execution of the event.</li>
+            <li>Budget planning and consultation.</li>
+            <li>Assisting with guest management and seating arrangements.</li>
+            <li>Other services as agreed upon by both parties.</li>
+          </ul>
+          <h4>2. Payment Terms</h4>
+          <p>The remaining balance shall be settled as follows:</p>
+          <ul>
+            <li><strong>20%</strong> of the balance shall be paid upon booking.</li>
+            <li>The remaining <strong>80%</strong>  shall be paid on wedding day.</li>
+            <li>Any additional services outside the agreed scope will be charged separately and shall be paid before the service is rendered.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script src="{% static 'assets1/js/booking.js' %}"></script>
   <script>
@@ -63,10 +109,12 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       const packageSelect = document.getElementById("id_package");
-      const customPackageTextarea = document.getElementById("custom-text-area");
+      const customPackageTextarea = document.getElementById("custom-services");
+      const textArea = document.getElementById("exampleFormControlTextarea1")
       
       console.log(packageSelect.value);
 
+      
       packageSelect.addEventListener("change", function() {
         const selectedText = packageSelect.options[packageSelect.selectedIndex].text;
         if (selectedText === "Customize Package") {
@@ -76,5 +124,29 @@
         }
       });
     });
-</script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const packageSelect = document.getElementById("id_package");
+      const form = document.getElementById("booking_form");
+      form.addEventListener("submit", function() {
+        const selectedText = packageSelect.options[packageSelect.selectedIndex].text;
+        if (selectedText === "Customize Package") {
+            var checkedServices = document.querySelectorAll("#custom-services input[type='checkbox']:checked");
+            console.log("Select services: ",checkedServices)
+            if (checkedServices.length < 2) {
+                Swal.fire({
+                  icon:'warning',
+                  title: 'Service selection is required',
+                  text: 'Please select at least 2 services when choosing Customized Package. '
+                })
+                console.log("sad")
+                event.preventDefault();
+                return false;
+            }
+        }
+        return true;
+      });
+    });
+    
+  </script>
 {% endblock %}

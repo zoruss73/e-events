@@ -4,6 +4,14 @@ from django.utils.html import mark_safe
 from decimal import Decimal
 # Create your models here.
 
+class Services(models.Model):
+    service_name = models.CharField(max_length=150, unique=True)
+    service_price = models.DecimalField(max_digits=8, decimal_places=2)
+
+    
+    def __str__(self):
+        return f"{self.service_name}"
+
 class Package(models.Model):
     PACKAGE_TYPES = [
         ('fixed', 'Fixed'),
@@ -12,22 +20,12 @@ class Package(models.Model):
 
     package_name = models.CharField(max_length=150, unique=True)
     package_type = models.CharField(max_length=10, choices=PACKAGE_TYPES, default='Fixed')
-    package_price = models.DecimalField(max_digits=8, decimal_places=2)
-    package_downpayment = models.DecimalField(max_digits=8, decimal_places=2)
-    package_inclusion = ArrayField(models.CharField(max_length=150), null=True)
-    
-    def save(self, *args, **kwargs):
-        if self.package_type == "Fixed":
-            self.package_downpayment =  Decimal(self.package_price) * Decimal('0.2')
+    services = models.ManyToManyField(Services, blank=True)
         
-        super().save(*args, **kwargs)
-        
-        
-    
     def __str__(self):
         return f"{self.package_name}"
-    
-    
+
+
 class Hero(models.Model):
     hero_text = models.CharField(max_length=150)
     hero_description = models.TextField()
@@ -35,7 +33,6 @@ class Hero(models.Model):
     def __str__(self):
         return self.hero_text
     
-
 class About(models.Model):
     img = models.ImageField(upload_to="about_img/")
     description = models.TextField()
