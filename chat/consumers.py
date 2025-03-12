@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async
 from .models import *
 from user.models import Notification
 from django.contrib.auth.models import User, AnonymousUser
+from channels.layers import get_channel_layer
 
 class ChatConsumer(AsyncWebsocketConsumer):
     
