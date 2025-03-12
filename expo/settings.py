@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'organizer',
     'user',
-    'channels',
     'chat',
+    'channels',
     'paypal.standard.ipn',
 ]
 
