@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('transcation_id', models.CharField(max_length=255, unique=True)),
                 ('amout_paid', models.DecimalField(decimal_places=2, max_digits=8)),
                 ('status', models.CharField(choices=[('Pending', 'Pending'), ('Paid', 'Paid')], max_length=50)),
-                ('payment_date', models.TimeField()),
+                ('payment_date', models.DateField()),
                 ('booking', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='payments', to='user.booking')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],

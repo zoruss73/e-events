@@ -30,11 +30,11 @@ class Booking(models.Model):
     
 
     
-    def update_balance(self):
-        total_paid = Payment.objects.filter(booking=self, status='successful').aggregate(models.Sum('amount_paid'))['amount_paid__sum'] or 0
-        self.remaining_balance = Decimal(self.package_price) - Decimal(total_paid)
-        self.payment_status = 'paid' if self.remaining_balance <= 0 else 'pending'
-        self.save()
+    # def update_balance(self):
+    #     total_paid = Payment.objects.filter(booking=self, status='successful').aggregate(models.Sum('amount_paid'))['amount_paid__sum'] or 0
+    #     self.remaining_balance = Decimal(self.package_price) - Decimal(total_paid)
+    #     self.payment_status = 'paid' if self.remaining_balance <= 0 else 'pending'
+    #     self.save()
     
 
     def __str__(self):
