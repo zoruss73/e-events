@@ -95,13 +95,13 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        'ENGINE' : 'django.db.backends.postgresql',
-        'NAME': 'e-events',
-        'USER': 'postgres',
-        'PASSWORD' : '12345',
-        'HOST': 'localhost',
-        'PORT' : '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        # 'ENGINE' : 'django.db.backends.postgresql',
+        # 'NAME': 'e-events',
+        # 'USER': 'postgres',
+        # 'PASSWORD' : '12345',
+        # 'HOST': 'localhost',
+        # 'PORT' : '5432',
     }
 }
 
