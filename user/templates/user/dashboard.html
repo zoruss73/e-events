@@ -40,7 +40,11 @@
               </div>
               <div class="ps-3">
                 
+                {% if bookings.remaining_balance %}
                 <h3>₱ {{ bookings.package_price|subtract:bookings.remaining_balance|floatformat:0|intcomma }}</h3>
+                {% else %}
+                <h3>₱ 0</h3>
+                {% endif %}
                 
               </div>
             </div>
@@ -57,7 +61,11 @@
                 <i class="bi bi-cash"></i>
               </div>
               <div class="ps-3">
+                {% if bookings.remaining_balance %}
                 <h3>₱ {{ bookings.remaining_balance|floatformat:0|intcomma }}</h3>
+                {% else %}
+                <h3>₱ 0</h3>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -127,6 +135,9 @@
     const x = setInterval(function(){
       const now = new Date().getTime();
 
+      if (!wedding_date){
+        return;
+      }
       const timeleft = wedding_date - now;
 
       const days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
