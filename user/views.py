@@ -69,8 +69,8 @@ def notifyOrganizer(request, booking):
         email = EmailMessage(mail_subject, email_message, to=[organizer_user.email])
         if email.send() and email_user.send():
             messages.success(request, "Booking confirmed successfully!")
-                    
-
+                
+    
     
 def activate(request, uidb64, token):
     User = get_user_model()
