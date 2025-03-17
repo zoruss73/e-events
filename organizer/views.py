@@ -67,38 +67,44 @@ def system_settings(request):
     projects = models.Project.objects.order_by('-id')
     return render(request, 'organizer/system_settings.html', {'hero':hero, 'about':about, 'projects':projects})
 
+from django.shortcuts import redirect
+from django.contrib import messages
+from . import models
+
 def update_hero(request):
-    hero = models.Hero.objects.first()
-    
+    hero, created = models.Hero.objects.get_or_create(id=1)
+
     if request.method == "POST":
-        hero_text = request.POST.get('hero_text')
-        hero_description = request.POST.get('hero_description')
-        
-        if hero_text == hero.hero_text and hero_description == hero.hero_description:
-            messages.info(request, "No changes detected")
+        hero_text = request.POST.get('hero_text', '').strip()
+        hero_description = request.POST.get('hero_description', '').strip()
+
+        if not created and hero_text == hero.hero_text and hero_description == hero.hero_description:
+            messages.info(request, "No changes detected.")
         else:
-            messages.success(request, "Successfully updated hero section.")
             hero.hero_text = hero_text
             hero.hero_description = hero_description
             hero.save()
-        
+            messages.success(request, "Successfully updated hero section." if not created else "Hero section created successfully.")
+
     return redirect('organizer:system-settings')
 
+
 def update_about(request):
-    about = models.About.objects.first()
-    
+    about, created = models.About.objects.get_or_create(id=1)
+
     if request.method == "POST":
-        description = request.POST.get('about_description')
+        description = request.POST.get('about_description', '').strip()
         img = request.FILES.get('image_input')
-        print(img)
-        if description == about.description and (img is None or img == about.img):
-            messages.info(request, "No changes detected")
+
+        if not created and description == about.description and (img is None or img == about.img):
+            messages.info(request, "No changes detected.")
         else:
-            messages.success(request, "Successfully updated about section.")
             if img:
                 about.img = img
             about.description = description
             about.save()
+            messages.success(request, "Successfully updated about section." if not created else "About section created successfully.")
+
     return redirect('organizer:system-settings')
 
 def activity_logs(request):
