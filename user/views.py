@@ -314,9 +314,9 @@ def proceed_to_payment(request):
         'package_name':booking_data['package'],
         'invoice': invoice_id,
         'currency_code': 'PHP',
-        'notify_url': f"http://{host}{reverse('paypal-ipn')}",
-        'return_url': f"http://{host}{reverse('user:booking-confirmation')}?booking_id={booking_id}&tx={invoice_id}",
-        'cancel_url': f"http://{host}{reverse('user:dashboard')}",
+        'notify_url': f"https://{host}{reverse('paypal-ipn')}",
+        'return_url': f"https://{host}{reverse('user:booking-confirmation')}?booking_id={booking_id}&tx={invoice_id}",
+        'cancel_url': f"https://{host}{reverse('user:dashboard')}",
         
     }
     
