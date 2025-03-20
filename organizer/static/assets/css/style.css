@@ -1395,3 +1395,7 @@ h6 {
     height: 100px;
   }
 }
+
+input[type="image"] {
+  width: 240px;
+}
