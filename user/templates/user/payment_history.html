@@ -120,9 +120,9 @@
       let package_selected = this.getAttribute("data-package");
 
       // Fill the template with data
-      document.getElementById("invoice-transaction").innerText = transactionId;
+      document.getElementById("invoice-transaction").innerText = `Booking ID: ${transactionId}`;
       document.getElementById("invoice-amount_paid").innerText = "₱ " + amount;
-      document.getElementById("invoice-date").innerText = date;
+      document.getElementById("invoice-date").innerText = `Payment date: ${date}`;
       document.getElementById("invoice-package").innerText = package_selected;
       document.getElementById("total_amount_paid").innerHTML = `<strong>Total: ₱ ${amount}</strong>`;
 

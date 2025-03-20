@@ -30,28 +30,15 @@ from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
 
+from django.db import transaction
+
 # Create your views here.
 
 def notifyOrganizer(request, booking):
-    organizer_user = User.objects.filter(is_staff=True, is_superuser=False).first()
+    organizer_user = User.objects.filter(is_staff=True, is_superuser=True).first()
     
     if organizer_user:
         message = f"You received a new booking from {request.user.username}!"
-
-        # Save notification in the database
-        notification = Notification.objects.create(user=organizer_user, message=message)
-
-        # Send real-time WebSocket notification
-        # channel_layer = get_channel_layer()
-        # group_name = f"notifications_{organizer_user.id}"
-
-        # async_to_sync(channel_layer.group_send)(
-        #     group_name,
-        #     {
-        #         "type": "send_notifications",
-        #         "message": notification.message,
-        #     }
-        # )
 
         # Send email notification (optional)
         mail_subject_user = "Booking Confirmed"
@@ -69,7 +56,9 @@ def notifyOrganizer(request, booking):
         email = EmailMessage(mail_subject, email_message, to=[organizer_user.email])
         if email.send() and email_user.send():
             messages.success(request, "Booking confirmed successfully!")
-                
+        else:
+            messages.success(request, "Booking email did not send")
+            
     
     
 def activate(request, uidb64, token):
@@ -256,6 +245,7 @@ def dashboard(request):
         bookings = Booking.objects.filter(user=request.user, payment_status="pending").first()
         bookings_count = Booking.objects.filter(user=request.user).count()
         
+
         print(bookings)
         return render(request, 'user/dashboard.html', {'bookings': bookings, 'bookings_count':bookings_count})
     return redirect('user:landingpage')
@@ -345,25 +335,21 @@ def booking_confirmed(request):
                 wedding_date=booking_data['wedding_date'],
                 is_confirmed = True,
                 package=package,
-                
                 package_price=booking_data['service_price'],
                 payment_status = "pending",
                 remaining_balance = booking_data['service_price'] - booking_data['booking_downpayment']
             )
             
             booking.selected_services.set(services)
-            booking.save()
-            
+            booking.save() 
             payment = Payment.objects.create(
-                booking = booking,
-                user = request.user,
-                transaction_id = txn_id,
-                status = "successful",
-                amount_paid = booking_data['booking_downpayment'],
-                payment_date = now()
+                    booking=booking,
+                    user=request.user,
+                    transaction_id=txn_id,
+                    status="successful",
+                    amount_paid=booking_data['booking_downpayment'],
             )
             payment.save()
-
 
             notifyOrganizer(request, booking)
             del request.session['booking_data']

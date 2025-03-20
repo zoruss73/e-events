@@ -30,11 +30,11 @@ class Booking(models.Model):
     
 
     
-    def update_balance(self):
-        total_paid = Payment.objects.filter(booking=self, status='successful').aggregate(models.Sum('amount_paid'))['amount_paid__sum'] or 0
-        self.remaining_balance = Decimal(self.package_price) - Decimal(total_paid)
-        self.payment_status = 'paid' if self.remaining_balance <= 0 else 'pending'
-        self.save()
+    # def update_balance(self):
+    #     total_paid = Payment.objects.filter(booking=self, status='successful').aggregate(models.Sum('amount_paid'))['amount_paid__sum'] or 0
+    #     self.remaining_balance = Decimal(self.package_price) - Decimal(total_paid)
+    #     self.payment_status = 'paid' if self.remaining_balance <= 0 else 'pending'
+    #     self.save()
     
 
     def __str__(self):
@@ -46,12 +46,12 @@ class Payment(models.Model):
     transaction_id = models.CharField(max_length=255, unique=True)
     status = models.CharField(max_length=50, choices=[('Pending', 'Pending'), ('successful', 'Successful')])
     amount_paid = models.DecimalField(max_digits=8, decimal_places=2)
-    payment_date = models.DateField(null=True)
+    payment_date = models.DateTimeField(default=now)
     
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.status == 'successful':
-            self.booking.update_balance()
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     if self.status == 'successful':
+    #         self.booking.update_balance()
     
     def __str__(self):
         return f"{self.user.first_name} {self.status} - {self.amount_paid}"
