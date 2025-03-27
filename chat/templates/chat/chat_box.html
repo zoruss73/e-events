@@ -1,7 +1,7 @@
 {% extends 'components2/base.html' %}
 {% load static %}
 {% block title %}
-  Message
+E-Events |  Message
 {% endblock %}
 
 {% block content %}
@@ -9,47 +9,191 @@
 
   <main id="main" class="main">
     <div class="chat d-flex flex-column vh-100">
-      <button id="backToSidebar" class="btn btn-outline-primary me-3 d-none">← Back</button>
+      {% if request.path != "/message/" %}
       <div class="chat-header d-flex align-items-center">
+        <i class="bi bi-arrow-left me-3 d-xl-none" id="backToSidebar"></i>
+        {% comment %} <button id="backToSidebar" class="btn btn-outline-primary me-3 d-xl-none"><i class="bi bi-arrow-left"></i></button> {% endcomment %}
         <img src="{% static 'assets2/img/avatar.svg' %}" alt="" class="order-1" />
         <div class="about order-2 d-inline-block flot-left ms-3">
           <p class="mb-0" style="">
-            <strong></strong>
+            <strong>
+              {% if request.user.username == room.user1.username %}
+                {{room.user2.first_name}} {{room.user2.last_name}}
+              {% else %}
+                {{room.user1.first_name}} {{room.user1.last_name}}
+              {% endif %}
+            </strong>
           </p>
-          <p class="mb-0 email">russeljarcia07@gmail.com</p>
+          <p class="mb-0 email">
+            {% if request.user.username == room.user1.username %}
+              {{room.user2.username}}
+            {% else %}
+              {{room.user1.username}}
+            {% endif %}
+          </p>
+               
         </div>
       </div>
-
-      <div class="chat-history">
+      
+      
+      <div class="chat-history message" id="chat-history">
         <ul class="mb-0">
+          {% if chats %}
+          {% for chat in chats %}
           <li class="clearfix">
-            <div class="message-data text-center">
-              <span class="message-date-time">10:10 AM, Today</span>
+            {% comment %} <div class="message-data text-center">
+                <span class="message-data-time">
+                    {{ chat.timestamp|date:"h:i A, M d" }}
+                </span>
+            </div> {% endcomment %}
+
+            {% if request.user.username == chat.sender.username %}
+            <!-- Sender's Message -->
+            <div class="message other-message float-end mt-3">
+                <p class="mb-0">{{ chat.message }}</p>
             </div>
-            <div class="message other-message float-end mt-3">Hi Russel, how are you? How is the project coming along?</div>
-          </li>
-          <li class="clearfix">
-            <div class="message-data text-center">
-              <span class="message-data-time">10:12 AM, Today</span>
+            {% else %}
+            <!-- Receiver's Message -->
+            <div class="d-flex align-items-center">
+                <img src="{% static 'assets2/img/avatar.svg' %}" alt="avatar" class="receiver_img me-2" />
+                <div class="message my-message mt-3">
+                  <p class="mb-0">{{ chat.message }}</p>
+                </div>
             </div>
-            <img src="{% static 'assets2/img/avatar.svg' %}" alt="avatar" class="receiver_img me-2" />
-            <div class="message my-message mt-3">Are we meeting today?</div>
+            {% endif %}
           </li>
+          {% endfor %}
+          {% endif %}
         </ul>
       </div>
+      
+
       <div class="chat-message clearfix">
-        <div class="input-group mb-0">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="bi bi-send"></i></span>
+        <form action="" method="post" id="message-form">
+          {% csrf_token %}
+          <div class="input-group mb-0  d-flex align-items-end">
+            <textarea id="new_chat" class="form-control" placeholder="Enter text here..." rows="1" name="new_chat"></textarea>
+            <div class="input-group-prepend">
+              <button type="submit" class="send-btn">
+                <i class="bi bi-send"></i>
+              </button>
+            </div>
           </div>
-          <input type="text" class="form-control" placeholder="Enter text here..." />
-        </div>
+        </form>
       </div>
+      {% endif %}
     </div>
   </main>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const chatInput = document.getElementById("new_chat");
+  
+      chatInput.addEventListener("input", function() {
+          this.style.height = "auto"; //
+          this.style.height = (this.scrollHeight) + "px"; 
+      });
+    });
+
+    document.getElementById("new_chat").addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault(); 
+          sendMessage();
+      }
+    });
+
+    function sendMessage() {
+      let messageInput = document.getElementById("new_chat");
+      let message = messageInput.value.trim(); // Get message text
+  
+      if (message === "") return; // Prevent sending empty messages
+      const websocketProtocol = window.location.protocol === "https:" ? "wss" : "ws";
+      const wsEndpoint = `${websocketProtocol}://${window.location.host}/ws/messages/{{room_id}}/`;
+      const socket = new WebSocket(wsEndpoint);
+      // Create message payload
+      let messageData = {
+          sender: "{{ request.user.username }}",
+          message: message
+      };
+  
+      // Send message via WebSocket
+      socket.send(JSON.stringify({ message: messageData }));
+  
+      // Clear input field after sending
+      messageInput.value = "";
+    }
+  </script>
 
   <script>
+    scollToBottom();
+
+    function scollToBottom(){
+      var chatContainer = document.getElementById("chat-history");
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    const websocketProtocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const wsEndpoint = `${websocketProtocol}://${window.location.host}/ws/messages/{{room_id}}/`;
+    const socket = new WebSocket(wsEndpoint);
+
+    socket.onopen = (event) => {
+      console.log("WebSocket connection opened!");
+    };
+
+    socket.onclose = (event) => {
+      console.log("WebSocket connection closed!");
+    };
+
+    document.getElementById('message-form').addEventListener('submit', function(event){
+      event.preventDefault();
+      const message = document.getElementById('new_chat').value;
+      socket.send(
+          JSON.stringify({
+              'message': message,
+              'room_id': '{{room_id}}',
+              'sender': '{{request.user}}',
+          })
+      );
+    });
+
+    socket.addEventListener("message", (event) => {
+      const message_data = JSON.parse(event.data)['message'];
+      console.log(message_data)
+
+      var sender = message_data['sender'];
+      var message = message_data['message'];
+
+      if (sender == '{{request.user.username}}'){
+        document.getElementById('new_chat').value = '';
+      }
+
+      var chatHistory = document.querySelector("#chat-history ul");
+
+      var newMessageItem = document.createElement("li");
+      newMessageItem.classList.add("clearfix");
+
+      if (sender == '{{request.user.username}}') {
+        newMessageItem.innerHTML = `
+            <div class="message other-message float-end mt-3">
+                <p class="mb-0">${message}</p>
+            </div>
+        `;
+      } else {
+        newMessageItem.innerHTML = `
+            <div class="d-flex align-items-center">
+                <img src="{% static 'assets2/img/avatar.svg' %}" alt="avatar" class="receiver_img me-2" />
+                <div class="message my-message mt-3">
+                    <p class="mb-0">${message}</p>
+                </div>
+            </div>
+        `;
+      }
+      chatHistory.appendChild(newMessageItem);
+      scollToBottom();
+    });
+  </script>
+
+  {% comment %} <script>
     const webSocketProtocol = window.location.protocol === "https:" ? "wss":"ws";
     const wsEndpoint = `${webSocketProtocol}://${window.location.host}/ws/chat/`;
     const socket = new WebSocket(wsEndpoint)
@@ -63,5 +207,5 @@
       console.log("WebSocket connection closed");
     }
 
-  </script>
+  </script> {% endcomment %}
 {% endblock %}

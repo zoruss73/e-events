@@ -4,7 +4,9 @@ from django.contrib.auth.decorators import login_required
 from . import models
 import re
 from decimal import Decimal
+from chat.models import Room, Message
 from django.db.models import Sum
+
 
 # Logics
 def separate_comma(to_array):
@@ -12,11 +14,24 @@ def separate_comma(to_array):
 
 def separate_newline(to_array):
     return [item.strip() for item in to_array.split("\n")]
-    
-    
+
+def getMessage(request):
+    last_message = Message.objects.order_by('room', '-timestamp').distinct('room')[:3]
+    result = []
+    for message in last_message:
+        room = Room.objects.get(id=message.room.id)
+        receiver = room.user1 if request.user != room.user1 else room.user2
+        result.append({
+            'message':message,
+            'receiver':receiver
+        })
+        
+    return result
 # Create your views here.
 def index(request):
-    return render(request, 'organizer/index.html')
+    chats = getMessage(request)
+    print(chats)
+    return render(request, 'organizer/index.html', {'chats':chats})
 
 def packages(request):
     package = models.Package.objects.all().order_by('-id')
@@ -67,10 +82,6 @@ def system_settings(request):
     projects = models.Project.objects.order_by('-id')
     return render(request, 'organizer/system_settings.html', {'hero':hero, 'about':about, 'projects':projects})
 
-from django.shortcuts import redirect
-from django.contrib import messages
-from . import models
-
 def update_hero(request):
     hero, created = models.Hero.objects.get_or_create(id=1)
 
@@ -87,7 +98,6 @@ def update_hero(request):
             messages.success(request, "Successfully updated hero section." if not created else "Hero section created successfully.")
 
     return redirect('organizer:system-settings')
-
 
 def update_about(request):
     about, created = models.About.objects.get_or_create(id=1)

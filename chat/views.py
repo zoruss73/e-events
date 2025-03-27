@@ -1,48 +1,42 @@
 import datetime
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
-from .models import Message
-from django.db.models import Q
+from .models import Message, Room
+from django.db.models import Q, Exists, OuterRef
 from django.db.models import Max
 
 # Create your views here.
-def chat_box(request, room_name):
-    search_query = request.GET.get('search', '') 
-    users = User.objects.exclude(id=request.user.id) 
-    chats = Message.objects.filter(
-        (Q(sender=request.user) & Q(receiver__username=room_name)) |
-        (Q(receiver=request.user) & Q(sender__username=room_name))
-    )
-
-    if search_query:
-        chats = chats.filter(Q(content__icontains=search_query))  
-
-    chats = chats.order_by('timestamp') 
+def chat_box(request, room_id=None):
+    user_rooms = Room.objects.filter(user1=request.user) | Room.objects.filter(user2=request.user)
+    
+    if request.user.is_staff:
+        # user_rooms = user_rooms.annotate(
+        #     has_messages=Exists(Message.objects.filter(room=OuterRef('pk')))
+        # ).filter(has_messages=True)
+        user_rooms = user_rooms.annotate(
+            has_messages=Exists(Message.objects.filter(room=OuterRef('pk')))
+        )
+        
     user_last_messages = []
 
-    for user in users:
-        last_message = Message.objects.filter(
-            (Q(sender=request.user) & Q(receiver=user)) |
-            (Q(receiver=request.user) & Q(sender=user))
-        ).order_by('-timestamp').first()
+    for room in user_rooms:
+        last_message = Message.objects.filter(room=room).order_by('-timestamp').first()
+        
+        # Determine the other user in the room
+        other_user = room.user1 if room.user2 == request.user else room.user2
 
         user_last_messages.append({
-            'user': user,
-            'last_message': last_message
+            'room': room,
+            'other_user': other_user,  # Store the other user
+            'last_message': last_message.message if last_message else "No messages yet",
+            'last_message_time': last_message.timestamp if last_message else None,
         })
-
-    # Sort user_last_messages by the timestamp of the last_message in descending order
-        user_last_messages.sort(
-            key=lambda x: (x['last_message'] is not None, x['last_message'].timestamp if x['last_message'] else datetime.datetime.min),
-            reverse=True
-        )
-
-    return render(request, 'chat/chat_box.html', {
-        'room_name': room_name,
-        'chats': chats,
-        'users': users,
-        'user_last_messages': user_last_messages,
-        'search_query': search_query 
-    })
-    
-
+        
+    chats = None
+    room = None
+    if room_id:
+        room = get_object_or_404(Room, id=room_id)
+        chats = Message.objects.filter(room=room)
+        print(chats)
+        
+    return render (request, 'chat/chat_box.html', {'user_last_messages': user_last_messages, 'chats' : chats, 'room_id':room_id, 'room':room})

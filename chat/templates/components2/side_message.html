@@ -1,26 +1,34 @@
 {% load static %}
 <aside class="sidebar" id="sidebar">
-    <h3>Messages</h3>
+  <div class="d-flex align-items-center gap-2">
+    <a href="{% if request.user.is_staff %}{% url 'organizer:dashboard' %}{% else %}{% url 'user:dashboard' %}{% endif %}" class="backToDashboard"><i class="bi bi-arrow-left"></i></a>
+    <h3 class="d-inline-block">Messages</h3>
+  </div>
+  {% if request.user.is_staff %}
     <div class="input-group">
-        <span class="input-group-text bi bi-search" id="basic-addon1"></span>
-        <input type="search" name="search_client" id="search_client" class="form-control" placeholder="Search client...">
+      <span class="input-group-text bi bi-search" id="basic-addon1"></span>
+      <input type="search" name="search_client" id="search_client" class="form-control" placeholder="Search client..." />
     </div>
+  {% endif %}
 
-    <div class="client-list mt-3" id="c-list">
-        <ul class="list-unstyled chat-list mt-2 mb-0">
-            {% for item  in  user_last_messages %}
-            {% if request.username != item.user.username and not item.user.is_superuser%}
-            <li class="clearfix rawr">
-                <img src="{% static 'assets2/img/avatar.svg' %}" alt="" >
-                <div class="about">
-                    <a href=""><strong>{{item.user.first_name}} {{item.user.last_name}}</strong></a>
-                    <div class="last_chat_time">{{ item.last_message.timestamp|timesince }} ago</i></div>
-                </div>
-            </li>
-            <hr>
-            {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-
+  <div class="client-list mt-3" id="c-list">
+    <ul class="list-unstyled chat-list mt-2 mb-0">
+      {% for item in user_last_messages %}
+        <li class="clearfix rawr {% if room_id == item.room.id %}active{% endif %}">
+          <img src="{% static 'assets2/img/avatar.svg' %}" alt="" />
+          <div class="about">
+            <a href="{% url 'chat:chat_history' item.room.id %}" class="{% if room_id == item.room.id %}active-link{% endif %}" data-room-id="{{ item.room.id }}"><strong>{{ item.other_user.first_name }} {{ item.other_user.last_name }}</strong></a>
+            <div class="last_chat_time">
+              {% if item.last_message_time %}
+                {{ item.last_message_time|timesince }} ago
+              {% else %}
+                No messages yet
+              {% endif %}
+            </div>
+          </div>
+        </li>
+        <hr />
+      {% endfor %}
+    </ul>
+  </div>
 </aside>

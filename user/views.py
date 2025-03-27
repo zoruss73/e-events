@@ -30,7 +30,7 @@ from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
 
-from django.db import transaction
+from chat.models import Room, Message
 
 # Create your views here.
 
@@ -59,7 +59,14 @@ def notifyOrganizer(request, booking):
         else:
             messages.success(request, "Booking email did not send")
             
-    
+def getMessage(request):
+    room = Room.objects.get(user1=request.user)
+    if room:
+        message = Message.objects.filter(room=room).order_by('-timestamp').first()    
+        if message:
+            receiver = room.user2 if request.user == room.user1 else room.user1
+            if receiver:
+                return {'message':message, 'receiver':receiver} 
     
 def activate(request, uidb64, token):
     User = get_user_model()
@@ -72,6 +79,15 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
+        
+        staff_user = User.objects.filter(is_staff=True, is_superuser=False).first()
+        
+        if staff_user:
+            room_exists = Room.objects.filter(user1=user, user2=staff_user).exists() or \
+                          Room.objects.filter(user1=staff_user, user2=user).exists()
+                          
+            if not room_exists:
+                Room.objects.create(user1=user, user2=staff_user)
         
         messages.success(request, 'Your email has been verified. You can now log in to your account.')
         return redirect('user:login')
@@ -215,7 +231,6 @@ def confirm_otp (request):
                 messages.error(request, "Invalid OTP.")
     return render(request, 'user/confirm_otp.html')
 
-
 def new_password(request):
     verified_email = request.session.get('verified_email')
     
@@ -239,23 +254,21 @@ def new_password(request):
 
     return render(request,'user/new_password.html')
 
-
 def dashboard(request):
     if request.user.is_authenticated:
         bookings = Booking.objects.filter(user=request.user, payment_status="pending").first()
         bookings_count = Booking.objects.filter(user=request.user).count()
         
+        chats = getMessage(request)
 
-        print(bookings)
-        return render(request, 'user/dashboard.html', {'bookings': bookings, 'bookings_count':bookings_count})
+        return render(request, 'user/dashboard.html', {'bookings': bookings, 'bookings_count':bookings_count, 'message': chats})
     return redirect('user:landingpage')
-
 
 def booking(request):
     if request.user.is_authenticated:
-        
+        chats = getMessage(request)
         bookings = Booking.objects.filter(user=request.user).order_by('-booking_date')
-        return render(request, 'user/booking.html',{'bookings':bookings} )
+        return render(request, 'user/booking.html',{'bookings':bookings, 'message': chats} )
         
         
     return redirect('user:landingpage')
@@ -265,6 +278,7 @@ def create_booking(request):
         booked_dates = [date.strftime("%Y-%m-%d") for date in Booking.objects.values_list('wedding_date', flat=True)]
         services = Services.objects.all()   
         print("Booked dates: ",booked_dates)
+        chats = getMessage(request)
         if request.method == "POST":
             form = BookingForm(request.POST)
             if form.is_valid():
@@ -287,11 +301,12 @@ def create_booking(request):
                 return redirect('user:proceed-to-payment')
         else:
             form = BookingForm()
-        return render(request, 'user/create_booking.html', {'form':form, 'booked_dates':booked_dates, 'services':services})
+        return render(request, 'user/create_booking.html', {'form':form, 'booked_dates':booked_dates, 'services':services, 'message': chats})
 
     return redirect('user:landingpage')
 
 def proceed_to_payment(request):
+    chats = getMessage(request)
     booking_data = request.session.get('booking_data')
     print(booking_data)
     host = request.get_host()
@@ -304,15 +319,15 @@ def proceed_to_payment(request):
         'package_name':booking_data['package'],
         'invoice': invoice_id,
         'currency_code': 'PHP',
-        'notify_url': f"https://{host}{reverse('paypal-ipn')}",
-        'return_url': f"https://{host}{reverse('user:booking-confirmation')}?booking_id={booking_id}&tx={invoice_id}",
-        'cancel_url': f"https://{host}{reverse('user:dashboard')}",
+        'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+        'return_url': f"http://{host}{reverse('user:booking-confirmation')}?booking_id={booking_id}&tx={invoice_id}",
+        'cancel_url': f"http://{host}{reverse('user:dashboard')}",
         
     }
     
     paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
     
-    return render(request, 'user/proceed_to_payment.html', {'booking_data': booking_data, 'paypal':paypal_payment})
+    return render(request, 'user/proceed_to_payment.html', {'booking_data': booking_data, 'paypal':paypal_payment, 'message': chats})
 
 def booking_confirmed(request):
     booking_id = request.GET.get('booking_id')
@@ -365,4 +380,6 @@ def booking_confirmed(request):
 
 def payment_history(request):
     payment = Payment.objects.filter(user=request.user)
-    return render(request, 'user/payment_history.html', {'payments':payment})
+    chats = getMessage(request)
+    
+    return render(request, 'user/payment_history.html', {'payments':payment, 'message': chats})

@@ -6,63 +6,61 @@ from .models import *
 from user.models import Notification
 from django.contrib.auth.models import User, AnonymousUser
 from channels.layers import get_channel_layer
+from django.utils.timezone import now
+from datetime import timedelta
 
 class ChatConsumer(AsyncWebsocketConsumer):
-    
+
     async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        user1 = self.scope['user'].username 
-        user2 = self.room_name
-        self.room_group_name = f"chat_{''.join(sorted([user1, user2]))}"
-
-        # Join room group
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        self.room_id=f"room_{self.scope['url_route']['kwargs']['room_id']}"
+        await self.channel_layer.group_add(self.room_id, self.channel_name)
         await self.accept()
-
-    async def disconnect(self, close_code):
-        # Leave room group
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-
-    async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        sender = self.scope['user']  
-        receiver = await self.get_receiver_user() 
-
-        await self.save_message(sender, receiver, message)
-
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            
-            {
-                'type': 'chat_message',
-                'sender': sender.username,
-                'receiver': receiver.username,
-                'message': message
-            }
-        )
         
-
-    async def chat_message(self, event):
-        message = event['message']
-        sender = event['sender']
-        receiver = event['receiver']
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({
-            'sender': sender,
-            'receiver': receiver,
-            'message': message
-        }))
-
-    @sync_to_async
-    def save_message(self, sender, receiver, message):
-        Message.objects.create(sender=sender, receiver=receiver, content=message)
-
-    @sync_to_async
-    def get_receiver_user(self):
-        return User.objects.get(username=self.room_name)
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.room_id, self.channel_name)
     
+    async def receive(self, text_data):
+        text_data_json=json.loads(text_data)
+        messsage = text_data_json
+        
+        print(messsage)
+        event = {
+            'type':'send_message',
+            'message':messsage
+        }
+        
+        if text_data_json.get('message') and text_data_json.get('sender'):
+            await self.create_message(data=text_data_json)
+        
+        await self.channel_layer.group_send(self.room_id, event)
+        
+    async def send_message(self, event):
+        data = event['message']
+        await self.create_message(data=data)
+        response_data = {
+            'sender': data['sender'],
+            'message': data['message']
+        }
+        
+        await self.send(text_data=json.dumps({'message':response_data}))
+    
+    @database_sync_to_async
+    def create_message(self, data):
+        get_room_by_id = Room.objects.get(id=data['room_id'])
+        user_instance = User.objects.get(username=data['sender'])
+        
+        time_threshold = now() - timedelta(seconds=1)
+        last_message = Message.objects.filter(
+            room=get_room_by_id, 
+            sender=user_instance,
+            message=data['message'],  # Only check for duplicate text
+            timestamp__gte=time_threshold  # Ensure time difference
+        ).exists()
+        
+        if not last_message:
+            new_message = Message(room=get_room_by_id, sender=user_instance, message=data['message'])
+            new_message.save()
+
 class NotificationConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
