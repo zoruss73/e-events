@@ -35,7 +35,7 @@ from chat.models import Room, Message
 # Create your views here.
 
 def notifyOrganizer(request, booking):
-    organizer_user = User.objects.filter(is_staff=True, is_superuser=True).first()
+    organizer_user = User.objects.filter(is_staff=True, is_superuser=False).first()
     
     if organizer_user:
         message = f"You received a new booking from {request.user.username}!"
