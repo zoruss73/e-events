@@ -6,7 +6,7 @@ import re
 from decimal import Decimal
 from chat.models import Room, Message
 from django.db.models import Sum
-
+from .forms import *
 
 # Logics
 def separate_comma(to_array):
@@ -80,7 +80,41 @@ def system_settings(request):
     hero = models.Hero.objects.first()
     about = models.About.objects.first()
     projects = models.Project.objects.order_by('-id')
-    return render(request, 'organizer/system_settings.html', {'hero':hero, 'about':about, 'projects':projects})
+    
+    if request.method == "POST":
+        project_form = ProjectForm(request.POST, request.FILES) 
+        award_form = AwardForm(request.POST, request.FILES)
+        faq_form = FAQForm(request.POST)
+        
+        if 'save_project' in request.POST and project_form.is_valid():
+            messages.success(request, "Project added succesfully.")
+            project_form.save()
+            return redirect('organizer:system-settings')
+        
+        if 'save_award' in request.POST and award_form.is_valid():
+            messages.success(request, "Award added succesfully.")
+            award_form.save()
+            return redirect('organizer:system-settings')
+        
+        if 'save_faq' in request.POST and faq_form.is_valid():
+            messages.success(request, "Faq Added succesfully.")        
+            faq_form.save()
+            return redirect('organizer:system-settings')
+            
+    else:
+        project_form = ProjectForm()
+        award_form = AwardForm()
+        faq_form = FAQForm()
+    
+    context = {
+        'hero':hero, 
+        'about':about, 
+        'projects':projects,
+        'faqform':faq_form,
+        'awardform': award_form,
+        'projectform':project_form,
+    }
+    return render(request, 'organizer/system_settings.html', context)
 
 def update_hero(request):
     hero, created = models.Hero.objects.get_or_create(id=1)

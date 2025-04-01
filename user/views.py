@@ -92,7 +92,7 @@ def activate(request, uidb64, token):
         messages.success(request, 'Your email has been verified. You can now log in to your account.')
         return redirect('user:login')
     else:
-        messages.error(request, 'Activation link is invalid')
+        messages.error(request, 'Activation link is invalid or already expired.')
     return redirect('user:login')
 
 def activateEmail(request, user):

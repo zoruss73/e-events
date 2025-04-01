@@ -44,13 +44,33 @@ class About(models.Model):
         return mark_safe('<img src="%s" width="80" />' % (self.img.url))
     
 class Project(models.Model):
+    project_name = models.CharField(max_length=150,)
+    description = models.TextField(null=True, blank=True)
     img = models.ImageField(upload_to="projects/")
-    alt = models.CharField(default="project_img")
+    # alt = models.CharField(default="project_img")
 
     def __str__(self):
-        return self.alt
+        return self.project_name
     
-    def imga_tag(self):
+    def image_tag(self):
         return mark_safe('<img src="%s" width="80" />' % (self.img.url))
 
+class Awards(models.Model):
+    award_name = models.CharField(max_length=150)
+    description = models.TextField(null=True, blank=True)
+    img = models.ImageField(upload_to="awards/")
+    # alt = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.award_name
+    
+    def image_tag(self):
+        return mark_safe('<img src="%s" width="80" />' % (self.img.url))
+
+class Faq(models.Model):
+    question = models.CharField(max_length=250)
+    answer = models.TextField()
+
+    def __str__(self):
+        return self.question
     

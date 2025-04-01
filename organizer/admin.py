@@ -19,5 +19,13 @@ class AboutAdmin(admin.ModelAdmin):
 admin.site.register(models.About, AboutAdmin)
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('img', 'alt')
+    list_display = ('project_name', 'image_tag')
 admin.site.register(models.Project, ProjectAdmin)
+
+class AwardsAdmin(admin.ModelAdmin):
+    list_display = ('award_name', 'image_tag')
+admin.site.register(models.Awards, AwardsAdmin)
+
+class FaqAdmin(admin.ModelAdmin):
+    list_display = ('question', )
+admin.site.register(models.Faq, FaqAdmin)

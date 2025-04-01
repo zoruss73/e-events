@@ -18,19 +18,20 @@
             <button class="nav-link" id="pills-about_us-tab" data-bs-toggle="pill" data-bs-target="#pills-about_us" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">About us</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-projects-tab" data-bs-toggle="pill" data-bs-target="#pills-projects" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">Projects</button>
+            <button class="nav-link" id="pills-projects-tab" data-bs-toggle="pill" data-bs-target="#pills-projects" type="button" role="tab" aria-controls="pills-projects-tab" aria-selected="false">Projects</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-awards-tab" data-bs-toggle="pill" data-bs-target="#pills-awards" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">Awards</button>
+            <button class="nav-link" id="pills-awards-tab" data-bs-toggle="pill" data-bs-target="#pills-awards" type="button" role="tab" aria-controls="pills-awards-tab" aria-selected="false">Awards</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-faq-tab" data-bs-toggle="pill" data-bs-target="#pills-faq" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">FAQ's</button>
+            <button class="nav-link" id="pills-faq-tab" data-bs-toggle="pill" data-bs-target="#pills-faq" type="button" role="tab" aria-controls="pills-faq-tab" aria-selected="false">FAQ's</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-about_us" aria-selected="false">Profile</button>
+            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile-tab" aria-selected="false">Profile</button>
           </li>
         </ul>
       </div>
+
       <div class="card-body">
         <div class="tab-content" id="pills-tab_content">
           <div class="tab-pane fade show active" id="pills-hero" role="tabpanel" aria-labelledby="pills-hero" tabindex="0">
@@ -55,7 +56,7 @@
               <br>
               <div class="mb-3">
                 <label for="about_img" class="form-label d-block">About Image:</label>
-                <img src="{{about.img.url}}" alt="" class="img-fluid" width="200" id="preview_image">
+                <img src="{{about.img.url}}" alt="" class="img-fluid rounded" width="300" id="preview_image">
                 <input type="file" class="form-control mt-2" accept="image/*" id="image_input" name="image_input">
                 
               </div>
@@ -70,14 +71,20 @@
           <div class="tab-pane fade" id="pills-projects" role="tabpanel" aria-labelledby="pills-projects" tabindex="0">
             <br>
             <div class="text-end mb-2">
-              <button class="btn btn-primary vertical-middle">Add Project <i class="bi bi-plus"></i></button>
+              <button class="btn btn-primary vertical-middle" type="button" data-bs-toggle="modal" data-bs-target="#addProject">Add Project <i class="bi bi-plus"></i></button>
             </div>
             <div class="row gy-2">
               {% for project in projects %}
               <div class="col-lg-4 col-md-6">
-                <div class="card">
+                {% comment %} project-body {% endcomment %}
+                <div class="card shadow">
                   <div class="card-img">
-                    <img src="{{project.img.url}}" alt="" class="img-fluid" data-aos="fade-up" data-aos-delay="100" />
+                    <img src="{{project.img.url}}" alt="" class="img-fluid rounded" data-aos="fade-up" data-aos-delay="100" />
+                  </div>
+                  <div class="card-body ">
+                    <h5 class="card-title fw-bold">{{ project.project_name }}</h5>
+                    <p class="card-text">{{ project.description|truncatechars:50 }}</p>
+                    <a href="#" class="btn btn-primary">Edit  <i class="bi bi-pencil"></i></a>
                   </div>
                 </div>
               </div>
@@ -85,9 +92,118 @@
             </div>
           </div>
 
+          <div class="tab-pane fade" id="pills-awards" role="tabpanel" aria-labelledby="pills-awards-tab" tabindex="0">
+            <br>
+            <div class="text-end mb-2">
+              <button class="btn btn-primary vertical-middle" type="button" data-bs-toggle="modal" data-bs-target="#addAward">Add Awards <i class="bi bi-plus"></i></button>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="pills-faq" role="tabpanel" aria-labelledby="pills-faq-tab" tabindex="0">
+            <br>
+            <div class="text-end mb-2">
+              <button class="btn btn-primary vertical-middle" type="button" data-bs-toggle="modal" data-bs-target="#addFaq">Add FAQ <i class="bi bi-plus"></i></button>
+            </div>
+          </div>
         </div>
 
       </div>
     </div>
   </section>
+
+  {% comment %} Projects Modal {% endcomment %}
+  <form method="post" class="row gap-3" id="form_create_project" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" tabindex="-1" id="addProject" aria-hidden="true" aria-labelledby="addProjectModal">
+      <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Project</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            
+              <div class="col-12">
+                <label for="{{projectform.project_name.id_for_label}}" class="form-label fw-bold">{{projectform.project_name.label}}</label>
+                {{ projectform.project_name }}
+                <label for="{{projectform.description.id_for_label}}" class="form-label fw-bold mt-2">{{projectform.description.label}}</label>
+                {{ projectform.description }}
+                <div class="mt-2">
+                  <img id="imgPreview" src="" alt="Image Preview" class="img-fluid rounded d-none" style="max-height: 200px;">
+                </div>
+                <label for="" class="form-label fw-bold mt-2">{{projectform.img.label}}</label>
+                {{ projectform.img }}
+              </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" name="save_project">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  {% comment %} End of project modal {% endcomment %}
+
+  {% comment %} Awards Modal {% endcomment %}
+  <form method="post" class="row gap-3" id="form_create_award" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" tabindex="-1" id="addAward" aria-hidden="true" aria-labelledby="addAwardModal">
+      <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Project</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="col-12">
+                <label for="" class="form-label fw-bold">{{awardform.award_name.label}}</label>
+                {{ awardform.award_name }}
+                <label for="" class="form-label fw-bold mt-2">{{awardform.description.label}}</label>
+                {{ awardform.description }}
+                <div class="mt-2">
+                  <img id="awardImgPreview" src="" alt="Image Preview" class="img-fluid rounded d-none" style="max-height: 200px;">
+                </div>
+                <label for="" class="form-label fw-bold mt-2">{{awardform.img.label}}</label>
+                {{ awardform.img }}
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" name="save_award">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  {% comment %} End of awards modal {% endcomment %}
+
+  {% comment %} FAQ's Modal {% endcomment %}
+  <form method="post" class="row gap-3" id="form_create_faq" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" tabindex="-1" id="addFaq" aria-hidden="true" aria-labelledby="addFaqModal">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">FAQ's</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="col-12">
+                <label for="" class="form-label fw-bold">{{faqform.question.label}}</label>
+                {{ faqform.question }}
+                <label for="" class="form-label fw-bold mt-2">{{faqform.answer.label}}</label>
+                {{ faqform.answer }}
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" name="save_faq">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  
 {% endblock %}
