@@ -75,8 +75,14 @@
             </div>
             <div class="row gy-2">
               {% for project in projects %}
-              <div class="col-lg-4 col-md-6">
-                {% comment %} project-body {% endcomment %}
+              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="card">
+                  <div class="card-img">
+                    <img src="{{ project.img.url }}" alt="" class="img-fluid" />
+                  </div>
+                </div>
+              </div>
+              {% comment %} <div class="col-lg-4 col-md-6">
                 <div class="card shadow">
                   <div class="card-img">
                     <img src="{{project.img.url}}" alt="" class="img-fluid rounded" data-aos="fade-up" data-aos-delay="100" />
@@ -87,7 +93,7 @@
                     <a href="#" class="btn btn-primary">Edit  <i class="bi bi-pencil"></i></a>
                   </div>
                 </div>
-              </div>
+              </div> {% endcomment %}
               {% endfor %}
             </div>
           </div>
@@ -96,6 +102,24 @@
             <br>
             <div class="text-end mb-2">
               <button class="btn btn-primary vertical-middle" type="button" data-bs-toggle="modal" data-bs-target="#addAward">Add Awards <i class="bi bi-plus"></i></button>
+            </div>
+            <div class="row g-4">
+              {% for award in awards %}
+                <div class="col-lg-4 col-md-6">
+                  <div class="card h-100 d-flex flex-column">
+                    <div class="card-img">
+                      <img src="{{award.img.url}}" alt="" class="img-fluid rounded" data-aos="fade-up" data-aos-delay="100" />
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                      <h5 class="card-title fw-bold">{{ award.award_name }}</h5>
+                      <p class="card-text">{{ award.description|truncatechars:50 }}</p>
+                      <div class="mt-auto">
+                        <a href="#" class="btn btn-primary">Edit  <i class="bi bi-pencil"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
             </div>
           </div>
 

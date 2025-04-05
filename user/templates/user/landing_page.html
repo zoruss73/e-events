@@ -19,7 +19,7 @@
             <h2 data-aos="fade-up">{{hero.hero_text}}</h2>
             <p data-aos="fade-up" data-aos-delay="100">{{ hero.hero_description }}</p>
             <div class="">
-              <a href="#packages" class="book-now-btn" data-aos="fade-up" data-aos-delay="100">Book now!</a>
+              <a href="{% url 'user:login' %}" class="book-now-btn" data-aos="fade-up" data-aos-delay="100">Book now!</a>
             </div>
           </div>
 
@@ -80,7 +80,7 @@
         <p>Here are some of my projects.</p>
       </div>
 
-      <div class="container">
+      {% comment %} <div class="container">
         <div class="row gy-4">
           {% for project in  projects %}
           <div class="col-lg-4 cold-md-6" data-aos="fade-up" data-aos-delay="100">
@@ -89,16 +89,98 @@
                 <img src="{{project.img.url}}" alt="" class="img-fluid" />
               </div>
             </div>
-          </div>
+          </div> 
           {% endfor %}
         </div>
       </div>
-
       <div class="container text-center mt-4" data-aos="fade-up" data-aos-delay="100">
         <a href="" class="view-more-btn">View More Projects</a>
+      </div> 
+
+      <div class="container">
+        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            {% for project in projects %}
+            <div class="carousel-item {% if forloop.counter == 1 %}  active{% endif %}">
+              <img src="{{project.img.url}}" alt="" class="img-fluid " />
+            </div>
+            {% endfor %}
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div> {% endcomment %}
+      <div id="gridContainer" class="container d-block d-md-block d-lg-block">
+        <div class="row gy-4">
+          {% for project in projects %}
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card">
+              <div class="card-img">
+                <img src="{{ project.img.url }}" alt="" class="img-fluid" />
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="container text-center mt-4" data-aos="fade-up" data-aos-delay="100">
+          <a href="" class="view-more-btn">View More Projects</a>
+        </div>
+      </div>
+    
+      <!-- Carousel Layout (Shown on Tablet & Mobile) -->
+      <div id="carouselContainer" class="container d-none d-md-none">
+        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            {% for project in projects %}
+            <div class="carousel-item {% if forloop.counter == 1 %} active{% endif %}">
+              <img src="{{ project.img.url }}" alt="" class="img-fluid" />
+            </div>
+            {% endfor %}
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
       </div>
     </section>
     {% comment %}End of Project Section{% endcomment %}
+
+    <section id="features" class="features section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <span>Awards</span>
+        <h2>Awards</h2>
+        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        {% for award in awards %}
+        <div class="row gy-4  features-item">
+          <div class="col-md-5 d-flex {% if forloop.counter|divisibleby:2 %}order-1 order-md-2{% endif %} align-items-center" data-aos="zoom-out" data-aos-delay="100">
+            <img src="{{award.img.url}}" class="img-fluid" alt="">
+          </div>
+          <div class="col-md-7 {% if forloop.counter|divisibleby:2 %}order-2 order-md-1{% endif %}" data-aos="fade-up" data-aos-delay="100">
+            <h3>{{award.award_name}}</h3>
+            <p>{{award.description}}</p>
+          </div>
+        </div>
+        {% endfor %}
+        
+      </div>
+    </section>
 
     {% comment %}Start of packages Section{% endcomment %}
     <section id="packages" class="packages section">
@@ -169,8 +251,42 @@
     </section>
     {% comment %}End of packages Section{% endcomment %}
 
-    {% comment %}Reviews Section{% endcomment %}
-    {% comment %}End of Reviews Section{% endcomment %}
+    <section id="faq" class="faq section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <span>Frequently Asked Questions</span>
+        <h2>Frequently Asked Questions</h2>
+        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="row justify-content-center">
+
+          <div class="col-lg-10">
+
+            <div class="faq-container accordion">
+              {% for faq in faqs %}
+              <div class="faq-item {% if forloop.first %}faq-active{% endif %}" data-aos="fade-up" data-aos-delay="200">
+                <i class="faq-icon bi bi-question-circle"></i>
+                <h3>{{faq.question}}</h3>
+                <div class="faq-content">
+                  <p>{{ faq.answer }}</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+              {% endfor %}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
 
     {% comment %}Contact Us Section{% endcomment %}
     <section id="contactus" class="contactus section">
@@ -263,4 +379,23 @@
     {% include "components1/footer.html" %}
     {% comment %} End footer {% endcomment %}
   </main>
+
+  <script>
+    function toggleView() {
+      let gridContainer = document.getElementById("gridContainer");
+      let carouselContainer = document.getElementById("carouselContainer");
+  
+      if (window.innerWidth >= 992) { // Desktop view (Bootstrap lg breakpoint)
+        gridContainer.classList.remove("d-none");
+        carouselContainer.classList.add("d-none");
+      } else { // Tablet and below (Bootstrap md and below)
+        gridContainer.classList.add("d-none");
+        carouselContainer.classList.remove("d-none");
+      }
+    }
+  
+    // Run on load and resize
+    window.addEventListener("load", toggleView);
+    window.addEventListener("resize", toggleView);
+  </script>
 {% endblock %}

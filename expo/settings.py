@@ -26,8 +26,8 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-# ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
+# ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS").split(",")
 
 
@@ -111,7 +111,7 @@ DATABASES = {
     }
 }
 
-DATABASES["default"] = dj_database_url.parse(config("DATABASE_URL"))
+# DATABASES["default"] = dj_database_url.parse(config("DATABASE_URL"))
 
 
 # Password validation
@@ -148,15 +148,27 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# STATIC_URL = '/static/'
+# MEDIA_URL = '/media/'
+# # STATICFILES_DIRS = [BASE_DIR / 'static']
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 STATIC_URL = '/static/'
 
-# STATICFILES_DIRS = [BASE_DIR / 'static']
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-
 MEDIA_URL = '/media/'
+
+if DEBUG:
+
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+else:
+
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 

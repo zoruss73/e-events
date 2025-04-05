@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 import random, json
 from datetime import date
 from decimal import Decimal
-from organizer.models import Hero, About, Project
+from organizer.models import Hero, About, Project, Awards, Faq
 from django.contrib.auth.hashers import make_password
 from organizer.models import Package, Services
 from .models import Booking, Payment, Notification
@@ -25,6 +25,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+
 # Paypal
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
@@ -138,7 +139,18 @@ def landing_page(request):
     about = About.objects.first()
     projects = Project.objects.order_by('-id')
     package = Package.objects.all()
-    return render(request, 'user/landing_page.html', {'hero':hero, 'about':about, 'projects':projects, 'packages':package})
+    awards = Awards.objects.order_by('-id')
+    faq = Faq.objects.order_by('-id')
+    
+    context = {
+        'hero':hero, 
+        'about':about, 
+        'projects':projects, 
+        'packages':package,
+        'awards':awards,
+        'faqs':faq
+        }
+    return render(request, 'user/landing_page.html', context)
 
 def log_in(request):
     if request.user.is_authenticated:

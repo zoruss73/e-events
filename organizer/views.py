@@ -80,6 +80,8 @@ def system_settings(request):
     hero = models.Hero.objects.first()
     about = models.About.objects.first()
     projects = models.Project.objects.order_by('-id')
+    awards = models.Awards.objects.order_by('-id')
+    faqs = models.Faq.objects.order_by('-id')
     
     if request.method == "POST":
         project_form = ProjectForm(request.POST, request.FILES) 
@@ -110,6 +112,8 @@ def system_settings(request):
         'hero':hero, 
         'about':about, 
         'projects':projects,
+        'awards': awards,
+        'faqs':faqs,
         'faqform':faq_form,
         'awardform': award_form,
         'projectform':project_form,
