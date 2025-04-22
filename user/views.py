@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.utils.timezone import now
-from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth import login, logout, authenticate, get_user_model, update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 #Email activation link imports
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -20,19 +21,20 @@ from decimal import Decimal
 from organizer.models import Hero, About, Project, Awards, Faq
 from django.contrib.auth.hashers import make_password
 from organizer.models import Package, Services
-from .models import Booking, Payment, Notification
+from .models import Booking, Payment, BookedService, UserProfile
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
 # Paypal
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
-
 from chat.models import Room, Message
-
+from django.db.models import Count
+from django.utils import timezone
+from django.db.models import Prefetch
 # Create your views here.
 
 def notifyOrganizer(request, booking):
@@ -204,6 +206,12 @@ def log_out(request):
     return redirect('user:landingpage')
 
 def register(request):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('organizer:dashboard')
+        else:
+            return redirect('user:dashboard')
+    
     if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -268,18 +276,35 @@ def new_password(request):
 
 def dashboard(request):
     if request.user.is_authenticated:
+        today = timezone.now().date()
         bookings = Booking.objects.filter(user=request.user, payment_status="pending").first()
         bookings_count = Booking.objects.filter(user=request.user).count()
-        
+        services_count = Services.objects.all().count()
+        upcoming_event = Booking.objects.filter(wedding_date__gte=today, user=request.user).order_by('wedding_date').first()
+        booked_service_counts = BookedService.objects.values('service_name').annotate(total_booked=Count('id'))
         chats = getMessage(request)
-
-        return render(request, 'user/dashboard.html', {'bookings': bookings, 'bookings_count':bookings_count, 'message': chats})
+        days_left = (upcoming_event.wedding_date - today).days
+        print(days_left, "days left.")
+        
+        context = {
+            'bookings': bookings, 
+            'bookings_count':bookings_count, 
+            'message': chats,
+            'services_count': services_count,
+            'service_stats': json.dumps(list(booked_service_counts)),
+            'days_left': days_left
+            }
+        return render(request, 'user/dashboard.html', context)
     return redirect('user:landingpage')
 
 def booking(request):
     if request.user.is_authenticated:
         chats = getMessage(request)
-        bookings = Booking.objects.filter(user=request.user).order_by('-booking_date')
+        bookings = Booking.objects.filter(user=request.user).prefetch_related(
+            Prefetch('booked_services', queryset=BookedService.objects.all())
+        ).order_by('-booking_date')
+
+        print(bookings)
         return render(request, 'user/booking.html',{'bookings':bookings, 'message': chats} )
         
         
@@ -331,9 +356,9 @@ def proceed_to_payment(request):
         'package_name':booking_data['package'],
         'invoice': invoice_id,
         'currency_code': 'PHP',
-        'notify_url': f"https://{host}{reverse('paypal-ipn')}",
-        'return_url': f"https://{host}{reverse('user:booking-confirmation')}?booking_id={booking_id}&tx={invoice_id}",
-        'cancel_url': f"https://{host}{reverse('user:dashboard')}",
+        'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+        'return_url': f"http://{host}{reverse('user:booking-confirmation')}?booking_id={booking_id}&tx={invoice_id}",
+        'cancel_url': f"http://{host}{reverse('user:dashboard')}",
         
     }
     
@@ -367,8 +392,13 @@ def booking_confirmed(request):
                 remaining_balance = booking_data['service_price'] - booking_data['booking_downpayment']
             )
             
-            booking.selected_services.set(services)
-            booking.save() 
+            for service in services:
+                BookedService.objects.create(
+                    booking=booking,
+                    service_name=service.service_name,
+                    service_price=service.service_price
+            )
+             
             payment = Payment.objects.create(
                     booking=booking,
                     user=request.user,
@@ -395,3 +425,66 @@ def payment_history(request):
     chats = getMessage(request)
     
     return render(request, 'user/payment_history.html', {'payments':payment, 'message': chats})
+
+def accounts_settings(request):
+    user = request.user
+    chats = getMessage(request)
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        image = request.FILES.get('image_input_1')
+        
+        user.first_name = first_name
+        user.last_name = last_name
+        
+
+        user_profile, created = UserProfile.objects.get_or_create(user=user)
+        if image:
+            user_profile.profile_img = image
+            user_profile.save()
+            
+        user.save()
+        messages.success(request, "Account updated succesfully.")
+        return redirect('user:account-settings')
+        
+    return render(request, 'user/account_settings.html', {'message':chats})
+
+def user_change_password(request):
+    user = request.user
+    error_old_password = None
+    error_new_password = None
+    error_confirm_password = None
+    chats = getMessage(request)
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if not check_password(old_password, user.password):
+            error_old_password = "Your old password was entered incorrectly. Please enter it again."
+        elif confirm_password !=  new_password:
+            error_confirm_password = "Password does not match"
+        else:
+            try:
+                validate_password(new_password, user)
+                user.set_password(new_password)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Password updated succesfully.")
+                return redirect('user:account-settings')
+            except ValidationError as e:
+                error_new_password = e.messages
+    
+    print(error_new_password, error_old_password)
+    
+    context = {
+        'error_old_password':error_old_password, 
+        'error_new_password':error_new_password,
+        'error_confirm_password':error_confirm_password,
+        'message':chats,
+        }
+    return render(request, 'user/change_password.html', context)
+            
+
+
+

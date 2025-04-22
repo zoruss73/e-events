@@ -29,3 +29,7 @@ admin.site.register(models.Awards, AwardsAdmin)
 class FaqAdmin(admin.ModelAdmin):
     list_display = ('question', )
 admin.site.register(models.Faq, FaqAdmin)
+
+class ActivityLogsAdmin(admin.ModelAdmin):
+    list_display = ('activity', 'created_at')
+admin.site.register(models.ActivityLogs, ActivityLogsAdmin)

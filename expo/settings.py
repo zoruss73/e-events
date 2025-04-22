@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'organizer',
-    'user',
+    'user.apps.UserConfig',
     'chat',
     'channels',
     'paypal.standard.ipn',
@@ -111,7 +111,7 @@ DATABASES = {
     }
 }
 
-DATABASES["default"] = dj_database_url.parse(config("DATABASE_URL"))
+# DATABASES["default"] = dj_database_url.parse(config("DATABASE_URL"))
 
 
 # Password validation
@@ -161,14 +161,14 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 if DEBUG:
 
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 else:
-
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 

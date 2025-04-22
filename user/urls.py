@@ -18,8 +18,20 @@ urlpatterns = [
 
     path('user/booking/', views.booking, name="booking"),
     path('user/booking/create-booking/', views.create_booking, name="create-booking"),
-    path('user/booking/create-booking/proceed-to-payment', views.proceed_to_payment, name="proceed-to-payment"),
+    path('user/booking/create-booking/proceed-to-payment/', views.proceed_to_payment, name="proceed-to-payment"),
     path('user/booking-confirmation/', views.booking_confirmed, name='booking-confirmation'),
     
-    path('user/payment-history', views.payment_history, name="payment-history"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('user/payment-history/', views.payment_history, name="payment-history"),
+    path('user/account-settings/', views.accounts_settings, name="account-settings"),
+    # path('user/account-settings/', views.update_account_details, name="update-account-settings"),
+    
+    path('user/account-settings/change-password/', views.user_change_password, name="user-change-password"),
+  
+    
+    
+    
+]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

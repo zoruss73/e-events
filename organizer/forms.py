@@ -1,6 +1,29 @@
 from django import forms
 from . import models
 
+class ServiceForm(forms.ModelForm):
+    service_name = forms.CharField(
+        max_length= 150,
+        label="Service Name:",
+        required=True,
+        widget=forms.TextInput(attrs={
+           'class':'form-control',
+           'placeholder': 'e.g. Photo booth' 
+        })
+    )
+    
+    service_price = forms.IntegerField(
+        label="Price",
+        required=True,
+        widget=forms.NumberInput(attrs={
+            'class':'form-control',
+            'placeholder':'e.g. ₱ 15,000'
+        })
+    )
+    
+    class Meta:
+        model = models.Services
+        fields = ['service_name', 'service_price']
 
 class FAQForm(forms.ModelForm):
     question = forms.CharField(
@@ -39,7 +62,7 @@ class AwardForm(forms.ModelForm):
     )
     
     description = forms.CharField(
-        label="Description",
+        label="Description:",
         widget=forms.Textarea(attrs={
             'class':'form-control',
             'placeholder':'Lorem ipsum dolor...',

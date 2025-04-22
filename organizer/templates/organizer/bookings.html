@@ -1,9 +1,81 @@
 {% extends "components/base.html" %}
 {% load static %}
+{% load humanize %}
+{% load organizer_custom_filters %}
 {% block title %}E-Events | Bookings{% endblock title %}
 
 {% block content %}
 {% include "components/sidebar.html" %}
 
+<section class="section booking mt-5">
+  <div class="row">
+    <div class="col-12">
+      <input type="text" id="searchBookingInput" class="form-control mb-3" placeholder="Search bookings...">
+    </div>
+    {% for booking in bookings %}
+    <div class="col-lg-4 col-md-6">
+      <div class="card info-card">
+        <div class="card-body position-relative">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="card-title pb-0 mb-0">{{ booking.user.first_name }} {{ booking.user.last_name }}</div>
+            <div class="dropdown">
+              <button class="fw-bold fs-5 three-dots" type="button" id="dropdownMenuButton{{ service.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                ...
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ service.id }}">
+                <li>
+                  <button class="dropdown-item text-dark" data-bs-toggle="modal" data-bs-target="#view_services_{{booking.id}}"><i class="bi bi-eye"></i>View Services</button>
+                </li>
+                <li>
+                  {% if booking.wedding_date == today %}
+                    <button class="dropdown-item text-success" type="button" onclick="confirmMarkAsComplete('{{booking.id}}')"><i class="bi bi-trash3"></i>Mark as complete</button>
+                  {% endif %}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <small><span class="fw-bold">Booking ID: </span>{{booking.id|truncatechars:30}}</small>
+          <p class="mb-1"><span class="fw-bold">Package Selected: </span>{{booking.package.package_name}}</p>
+          <p class="mb-1"><span class="fw-bold">Total package price: </span>₱ {{booking.package_price|floatformat:0|intcomma}}</p>
+          <p class="mb-1"><span class="fw-bold">Remaining balance: </span>₱ {{booking.package_price|subtract:booking.remaining_balance|floatformat:0|intcomma}}</p>
+          <p class="mb-3"><span class="fw-bold">Wedding Date: </span>{{booking.wedding_date}}</p>
+          
+          <div class="text-end">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="no-result text-center d-none mt-2">
+      <p class="text-danger fw-bold">No Bookings Found.</p>
+    </div>
+  </div>
+</section>
 
+
+
+
+{% for booking in bookings %}
+  <div class="modal fade" tabindex="-1" id="view_services_{{booking.id}}" aria-hidden="true" aria-labelledby="updateAwardModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="col-12">
+            <h3 class="selected_services fw-bold">Selected Service:</h3>
+            <div class="form-control">
+              {% for service in booking.booked_services.all %}
+                <label for="service_{{forloop.counter}}" class="btn btn-primary text-light me-2 my-2">{{service.service_name}}</label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
 {% endblock content %}

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.utils.html import mark_safe
 from decimal import Decimal
+from django.contrib.auth.models import User
 # Create your models here.
 
 class Services(models.Model):
@@ -73,4 +74,13 @@ class Faq(models.Model):
 
     def __str__(self):
         return self.question
+    
+class ActivityLogs(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="activity_logs")
+    activity = models.CharField(max_length=150)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.user} - {self.activity}"
     

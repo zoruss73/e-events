@@ -1403,3 +1403,9 @@ input[type="image"] {
 .project-body {
   background-color: #f6f9ff;
 }
+
+#pills-awards img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}

@@ -22,7 +22,6 @@ def chat_box(request, room_id=None):
     for room in user_rooms:
         last_message = Message.objects.filter(room=room).order_by('-timestamp').first()
         
-        # Determine the other user in the room
         other_user = room.user1 if room.user2 == request.user else room.user2
 
         user_last_messages.append({

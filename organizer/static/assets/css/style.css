@@ -13,10 +13,13 @@
   scroll-behavior: smooth;
 }
 
-body {
+html, body {
   font-family: "Open Sans", sans-serif;
   background: #f6f9ff;
   color: #444444;
+  height: 100%;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 a {
@@ -45,12 +48,18 @@ h6 {
   margin-top: 60px;
   padding: 20px 30px;
   transition: all 0.3s;
+  flex: 1 !important;
 }
 
 @media (max-width: 1199px) {
   #main {
     padding: 20px;
   }
+}
+
+footer {
+  position: relative !important;
+  margin-top: auto !important;
 }
 
 /*--------------------------------------------------------------
@@ -750,7 +759,7 @@ h6 {
   padding-bottom: 10px;
 }
 
-.dashboard .info-card h3 {
+.dashboard .info-card h3, .service-price  {
   font-size: 28px;
   color: #012970;
   font-weight: 700;
@@ -1408,4 +1417,18 @@ input[type="image"] {
   width: 100%;
   height: 300px;
   object-fit: cover;
+}
+
+.three-dots {
+  border: none;
+  background-color: #ffffff;
+  color: #012970;
+}
+
+.info-card-faq .card-title{
+  padding-bottom: 0 !important;
+}
+
+#updatePasswordBtn:hover {
+  cursor: pointer;
 }

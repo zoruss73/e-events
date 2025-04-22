@@ -16,7 +16,6 @@
         <table class="table table-hover datatable">
           <thead>
             <tr>
-              <th>ID</th>
               <th>User</th>
               <th>Date</th>
               <th>Time</th>
@@ -25,28 +24,27 @@
             </tr>
           </thead>
           <tbody>
+            {% for log in page_obj %}
             <tr>
-              <td>1</td>
-              <td>Julius Orit</td>
-              <td>2/18/2025</td>
-              <td>10:00 AM</td>
+              <td>{{ log.user.first_name }} {{ log.user.last_name }}</td>
+              <td>{{ log.created_at|date:"F d, Y" }}</td>
+              <td>{{ log.created_at|date:"h:i A" }}</td>
               <td>
-                <p class="bg-success d-inline-block px-2 text-light action">Added</p>
+                <p class="{% if log.activity == "Add" %}bg-success{% elif log.activity == "Update" %}bg-info{% else %}bg-danger{% endif %} d-inline-block px-2 text-light action">
+                  {{ log.activity }}
+                </p>
               </td>
-              <td>Created a new package</td>
+              <td>{{ log.description }}</td>
             </tr>
+            {% empty %}
             <tr>
-              <td>2</td>
-              <td>Julius Orit</td>
-              <td>2/14/2025</td>
-              <td>12:00 AM</td>
-              <td>
-                <p class="bg-warning d-inline-block px-2 text-dark action">Updated</p>
-              </td>
-              <td>Update package #1</td>
+              <td colspan="5" class="text-center">No activity logs found.</td>
             </tr>
+            {% endfor %}
           </tbody>
+          
         </table>
+        
       </div>
     </div>
   </section>

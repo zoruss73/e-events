@@ -62,48 +62,7 @@
    * Active Nav Tag
    */
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const navLinks = document.querySelectorAll("#navmenu a");
-    const sections = document.querySelectorAll("section");
 
-    // Function to remove 'active' class from all links
-    function removeActiveClasses() {
-      navLinks.forEach(item => item.classList.remove("active"));
-    }
-
-    // Click event for navigation links
-    navLinks.forEach(link => {
-      link.addEventListener("click", function () {
-        removeActiveClasses();
-        this.classList.add("active");
-      });
-    });
-
-    // Function to check which section is in viewport
-    function activateSection() {
-      let currentSection = "";
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (window.scrollY >= sectionTop - sectionHeight / 3) {
-          currentSection = section.getAttribute("id");
-        }
-      });
-
-      removeActiveClasses();
-
-      if (currentSection) {
-        document.querySelector(`#navmenu a[href="#${currentSection}"]`).classList.add("active");
-      } else {
-        // Keep the "Home" link active if no section is detected
-        document.querySelector("#navmenu a:first-child").classList.add("active");
-      }
-    }
-
-
-    // Listen for scroll event
-    window.addEventListener("scroll", activateSection);
-  });
 
 
 
@@ -201,7 +160,7 @@
   document.querySelectorAll('.faq-item h3, .faq-item .faq-toggle').forEach((faqItem) => {
     faqItem.addEventListener('click', () => {
       const allFaqItems = document.querySelectorAll('.faq-item');
-      
+
       // Check if the clicked FAQ item is already active
       if (faqItem.parentNode.classList.contains('faq-active')) {
         // If it's active, remove the faq-active class to close it
@@ -215,7 +174,33 @@
       }
     });
   });
-  
-  
 
+  
 })();
+
+
+// Expandalble 
+const container = document.getElementById("container3");
+const registerBtn = document.getElementById("register3");
+const loginBtn = document.getElementById("login3");
+
+registerBtn.addEventListener("click", () => {
+  container.classList.add("active");
+});
+
+loginBtn.addEventListener("click", () => {
+  container.classList.remove("active");
+});
+
+
+// Hero
+const bgVideo = document.getElementById('bgVideo');
+const smallVideoContainer = document.getElementById('smallVideo');
+
+smallVideoContainer.addEventListener('mouseenter', () => {
+bgVideo.pause();
+});
+
+smallVideoContainer.addEventListener('mouseleave', () => {
+bgVideo.play();
+});

@@ -8,26 +8,41 @@
 {% block content %}
   {% include 'components1/navbar.html' %}
 
-  <main class="main">
+  <main class="main" data-bs-spy="scroll" data-bs-target="#navmenu">
     {% comment %}Hero Section{% endcomment %}
     <section id="hero" class="hero section dark-background">
       {% comment %} <img src="{% static 'assets1/img/world-dotted-map.png' %}" alt="" class="hero-bg" data-aos="fade-in" /> {% endcomment %}
+      
+      <div class="video-container">
+        <video id="bgVideo" autoplay muted loop class="position-absolute w-100 h-100" style="object-fit: cover; z-index: 2;" >
+          <source src="{% static 'assets1/Reel.E-Events.mp4' %}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
 
       <div class="container">
         <div class="row gy-4 d-flex justify-content-between">
-          <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
-            <h2 data-aos="fade-up">{{hero.hero_text}}</h2>
-            <p data-aos="fade-up" data-aos-delay="100">{{ hero.hero_description }}</p>
-            <div class="">
-              <a href="{% url 'user:login' %}" class="book-now-btn" data-aos="fade-up" data-aos-delay="100">Book now!</a>
-            </div>
+          <div class="col-lg-4 flex-column justify-content-center">
+                <div class="hero-text-area">
+                <h2 data-aos="fade-up">{{hero.hero_text}}</h2>
+                <p data-aos="fade-up" data-aos-delay="100">{{ hero.hero_description }}</p>
+                  
+                    <a href="{% url 'user:login' %}" data-aos="fade-up" data-aos-delay="100" class="book-now-btn z-index-5" data-aos="fade-up" data-aos-delay="100">Book now!</a>
+        
+                </div>
           </div>
-
-          <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
-            <img src="{% static 'assets1/img/Wedding-bro.png' %}" class="img-fluid mb-3 mb-lg-0" alt="" />
+          <div class="col-lg-8 flex-column justify-content-center">
+            <div class="small-video" id="smallVideoContainer" data-aos="fade-left" data-aos-delay="100">
+              <video autoplay muted loop id="smallVideo">
+                <source src="{% static 'assets1/Reel.E-Events.mp4' %}" type="video/mp4">
+              </video>
+            </div>
           </div>
         </div>
       </div>
+        
+
+      
     </section>
     {% comment %}End of hero section{% endcomment %}
 
@@ -43,29 +58,7 @@
           <div class="col-lg-6 content order-last " data-aos="fade-up" data-aos-delay="100">
             <h3>About us</h3>
             <p>{{about.description}}</p>
-            <ul>
-              <li>
-                <i class="bi bi-diagram-3"></i>
-                <div>
-                  <h5>Ullamco laboris nisi ut aliquip consequat</h5>
-                  <p>Magni facilis facilis repellendus cum excepturi quaerat praesentium libre trade</p>
-                </div>
-              </li>
-              <li>
-                <i class="bi bi-fullscreen-exit"></i>
-                <div>
-                  <h5>Ullamco laboris nisi ut aliquip consequat</h5>
-                  <p>Magni facilis facilis repellendus cum excepturi quaerat praesentium libre trade</p>
-                </div>
-              </li>
-              <li>
-                <i class="bi bi-broadcast"></i>
-                <div>
-                  <h5>Ullamco laboris nisi ut aliquip consequat</h5>
-                  <p>Magni facilis facilis repellendus cum excepturi quaerat praesentium libre trade</p>
-                </div>
-              </li>
-            </ul>
+            
           </div>
         </div>
       </div>
@@ -156,7 +149,7 @@
     </section>
     {% comment %}End of Project Section{% endcomment %}
 
-    <section id="features" class="features section">
+    <section id="awards" class="features section">
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
@@ -187,7 +180,7 @@
       <div class="container section-title" data-aos="fade-up">
         <span>Packages</span>
         <h2>Packages</h2>
-        <p>Here are the top packages we offer.</p>
+        <p>Here are the top packages we offer.</p>      
       </div>
 
       <div class="container">
@@ -216,38 +209,15 @@
               {% if package.package_type == "fixed" %}
               <a href="#" class="buy-btn">View Package</a>
               {% else %}
-              <a href="#" class="buy-btn">Get a quote</a>
+              <a href="{% url 'user:login' %}" class="buy-btn">Get a quote</a>
               {% endif %}
             </div>
           </div>
           {% endfor %}
-           {% comment %} <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
-            <div class="package-item">
-              <h3>Package 3</h3>
-              <h4><sup>₱</sup>0</h4>
-              <ul>
-                <li>
-                  <i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span>
-                </li>
-                <li>
-                  <i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span>
-                </li>
-                <li>
-                  <i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span>
-                </li>
-                <li class="na">
-                  <i class="bi bi-x"></i> <span>Pharetra massa massa ultricies</span>
-                </li>
-                <li class="na">
-                  <i class="bi bi-x"></i> <span>Massa ultricies mi quis hendrerit</span>
-                </li>
-              </ul>
-              <a href="#" class="buy-btn">View Package</a>
-            </div>
-          </div> {% endcomment %}
-
+           
         </div>
       </div>
+
     </section>
     {% comment %}End of packages Section{% endcomment %}
 
@@ -289,89 +259,112 @@
     </section>
 
     {% comment %}Contact Us Section{% endcomment %}
-    <section id="contactus" class="contactus section">
-      <div class="container section-title" data-aos="fade-up">
+    <section id="contactus" class="contactus section" data-aos="fade-up" data-aos-delay="200">
+      <div class="container section-title" data-aos="fade-up" data-aos-delay="200">
         <span>Contact Us</span>
         <h2>Contact Us</h2>
-        <p>You can access us here.</p>
+        <p>Interested in knowing more? You can connect to us by visiting our office or sending us a message through the channels below.</p>
       </div>
 
-      <div class="container" data-aos="fade-up">
-        <div class="row gy-4">
-          
-          <div class="col-xl-6">
-            <div class="row">
+      <div class="container3 container" id="container3">
+        <div class="form-container sign-up">
 
-              <div class="col-lg-6">
-                <div class="info-box card">
-                  <i class="bi bi-geo-alt"></i>
-                  <h3>Address</h3>
-                    <p>Vinzons, Camarines Norte</p>
-                </div>
-              </div>
-
-              <div class="col-lg-6">
-                <div class="info-box card">
-                  <i class="bi bi-telephone"></i>
-                  <h3>Address</h3>
-                  <p>Vinzons, Camarines Norte</p>
-                </div>
-              </div>
-
-              <div class="col-lg-6 mt-4">
-                <div class="info-box card">
-                  <i class="bi bi-envelope"></i>
-                  <h3>Address</h3>
-                  <p>Vinzons, Camarines Norte</p>
-                </div>
-              </div>
-
-              <div class="col-lg-6 mt-4">
-                <div class="info-box card">
-                  <i class="bi bi-clock"></i>
-                  <h3>Address</h3>
-                  <p>Vinzons, Camarines Norte</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <div class="col-xl-6">
             <div class="card p-4 info-box-email">
               <form action="" method="post" class="email-from">
-                <div class="row gy-4">
-  
+                <div class="row">
+
                   <div class="col-md-6">
                     <input type="text" name="name" class="form-control" placeholder="Your Name" required>
                   </div>
-  
+
                   <div class="col-md-6 ">
                     <input type="email" class="form-control" name="email" placeholder="Your Email" required>
                   </div>
-  
+
                   <div class="col-md-12">
                     <input type="text" class="form-control" name="subject" placeholder="Subject" required>
                   </div>
-  
+
                   <div class="col-md-12">
-                    <textarea class="form-control" name="message" rows="6" placeholder="Message" required></textarea>
+                    <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
                   </div>
-  
+
                   <div class="col-md-12 text-center">
                     {% comment %} <div class="loading">Loading</div>
                     <div class="error-message"></div>
                     <div class="sent-message">Your message has been sent. Thank you!</div> {% endcomment %}
                     <button type="submit" class="send-email-btn">Send Message</button>
                   </div>
-  
+
                 </div>
               </form>
             </div>
-  
+
+        </div>
+
+        <!-- Default -->
+        <div class="form-container sign-in">
+          <div class="form-card-containers">
+
+            <div class="col-lg-10">
+              <div class="row">
+
+                <div class="col-lg-6 ">
+                  <div class="info-box-card text-center">
+                    <i class="bi bi-geo-alt">Address</i>
+                      <p class="px-3">Vinzons, Camarines Norte</p>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="info-box-card text-center">
+                    <i class="bi bi-telephone">Address</i>
+                    <p class="px-3">Vinzons, Camarines Norte</p>
+                  </div>
+                </div>
+
+                <div class="col-lg-6 ">
+                  <div class="info-box-card text-center">
+                    <i class="bi bi-envelope"></i>
+                    Address
+                    <p class="px-3">Vinzons, Camarines Norte</p>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="info-box-card text-center">
+                    <i class="bi bi-clock">Address</i>
+                    <p class="px-3">Vinzons, Camarines Norte</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+          </div>
+            
+        </div>
+        <div class="toggle-container">
+          <div class="toggle">
+            <div class="toggle-panel toggle-left">
+              <div class="toggle-texts">
+                <h1>Send us a Message!</h1>
+                <p>Enter your details to send us a message.</p>
+                <button class="hidden" id="login3">Return</button>
+              </div>
+            </div>
+            <div class="toggle-panel toggle-right">
+
+                <div class="toggle-texts">
+                  <h1>Hello, Friend!</h1>
+                  <p>
+                    Have an inqury? Message us and let us know your concerns.
+                  </p>
+                  <button class="hidden" id="register3">Send a Message</button>
+                </div>      
+            </div>
           </div>
         </div>
-      </div>
     </section>
     {% comment %}End of Contact Us Section{% endcomment %}
 

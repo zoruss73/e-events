@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  {% comment %} {% include "components1/navbar.html" %} {% endcomment %}
+  {% include "components1/navbar.html" %}
   <main class="bg-login">
     
     <div class="container">
@@ -13,25 +13,25 @@
         {% comment %} <img src="{% static 'assets1/img/world-dotted-map.png' %}" alt="" class="login-bg-img"> {% endcomment %}
         <div class="container">
           <div class="row justify-content-center">
-            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-sm-8 d-flex flex-column align-items-center justify-content-center">
 
-              <div class="d-flex justify-content-center py-4">
+              {% comment %} <div class="d-flex justify-content-center py-4">
                 <a href="{% url 'user:landingpage' %}" class="logo d-flex align-items-center w-auto">
                   <h3 class="text-light" style="font-weight: 700; font-size: 40px; font-family: z-index: 1; "Poppins", sans-serif;">E-Events</h3>
                 </a>
-              </div>
+              </div> {% endcomment %}
 
-              <div class="card mb-3">
+              <div class="card mb-3 mt-5">
                 <div class="card-body">
                   <div class="pt-4 pb-2">
-                    <h5 class="text-center pb-0 fs-4">CREATE YOUR ACCOUNT</h5>
+                    <h5 class="text-center pb-0 fs-4" style="color: #00dbde;">CREATE YOUR ACCOUNT</h5>
                     <p class="text-center small">Fill out the form below.</p>
                   </div>
                   <form class="row needs-validation" method="post" novalidate>
                     {% csrf_token %}
                 
                     {% for field in form %}
-                        <div class="mb-2 {% if field.name in 'first_name last_name' %} col-6 {% endif %}">
+                        <div class="mb-2 {% if field.name in 'first_name last_name' %} col-6 {% endif %} registration-form">
                             {{ field.label_tag }}
                             <input 
                                 type="{{ field.field.widget.input_type }}" 
@@ -42,11 +42,12 @@
                                 placeholder="{{ field.field.widget.attrs.placeholder }}"
                             >
                 
-                            <!-- Show Error Messages for All Fields -->
                             {% if field.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in field.errors %}
-                                        <small>{{ error }}</small>
+                                        {% if error.strip %}  {# check if the message is not just empty #}
+                                            <small>{{ error }}</small><br>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
                             {% endif %}
@@ -74,6 +75,102 @@
     </div>
   </main>
 
+  <style>
+    main {
+      height: 100%;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #0f0f2d, #1f1f4d);
+      color: #fff;
+      overflow: hidden;
+    }
+
+    p,label {
+      color: #fff;
+    }
+
+    .registration-form input {
+      color: white !important;
+    }
+
+    /* .bg-login {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, #2a2a72, #009ffd);
+      animation: backgroundShift 10s infinite alternate;
+    }
+
+    @keyframes backgroundShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }  */
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 2rem;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .logo h3 {
+      font-size: 40px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #00dbde, #fc00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00dbde; }
+      to { text-shadow: 0 0 20px #fc00ff; }
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #ff512f, #dd2476);
+      border: none;
+      transition: background 0.4s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #dd2476, #ff512f);
+    }
+
+    input.form-control {
+      background-color: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      transition: all 0.3s;
+    }
+
+    input.form-control:focus {
+      background-color: rgba(255,255,255,0.1);
+      border-color: #00dbde;
+      box-shadow: 0 0 10px #00dbde;
+    }
+
+    .forgot-password a,
+    .small a {
+      color: #00dbde;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .forgot-password a:hover,
+    .small a:hover {
+      color: #fc00ff;
+    }
+
+
+  </style>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {

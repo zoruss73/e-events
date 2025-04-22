@@ -25,6 +25,9 @@
     <!-- Template Organizer CSS File -->
     <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" />
 
+    {% comment %} Full calendar CSS {% endcomment %}
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
     {% block css %}
 
     {% endblock %}
@@ -76,6 +79,7 @@
     {% endblock %}
 
     {% comment %}Sweet Alert{% endcomment %}
+    <script src="{% static 'assets/js/system_settings.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Vendor JS Files -->
@@ -90,7 +94,9 @@
 
     <!-- Template Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
-    <script src="{% static 'assets/js/system_settings.js' %}"></script>
+    {% comment %} Full calendar JS {% endcomment %}
+    
+    
 
     {% comment %} <script src="{% static 'assets/js/notification.js' %}"></script> {% endcomment %}
   </body>

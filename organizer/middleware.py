@@ -19,7 +19,7 @@ class OrganizerOnlyMiddleware:
                 messages.info(request, "Please login to your account first.")
                 return redirect('user:login')
 
-        elif request.path.startswith('/user/') and (request.user.is_staff or request.user.is_superuser):
+        elif request.path.startswith('/user/') and (request.user.is_staff or request.user.is_superuser or not request.user.is_authenticated):
             messages.warning(request, "Sorry, you don't have access to the client side.")
             return redirect("organizer:dashboard")
         

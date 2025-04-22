@@ -5,7 +5,12 @@ from organizer.models import Package, Services
 from django.utils.timezone import now
 # Create your models here.
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_img = models.ImageField(upload_to='profile_images/', default='profile_images/avatar.svg')
 
+    def __str__(self):
+        return self.user.username
 
 class Booking(models.Model):
     
@@ -26,18 +31,17 @@ class Booking(models.Model):
     payment_status = models.CharField(max_length=20, choices=[('pending', 'Pending'),('paid', 'Paid')], default="pending")
     remaining_balance = models.DecimalField(max_digits=10, decimal_places=2)
     is_cancelled = models.BooleanField(default=False)
-    
-
-    
-    # def update_balance(self):
-    #     total_paid = Payment.objects.filter(booking=self, status='successful').aggregate(models.Sum('amount_paid'))['amount_paid__sum'] or 0
-    #     self.remaining_balance = Decimal(self.package_price) - Decimal(total_paid)
-    #     self.payment_status = 'paid' if self.remaining_balance <= 0 else 'pending'
-    #     self.save()
-    
-
+    is_completed = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.booking_id} - {self.user.username}"
+
+class BookedService(models.Model):
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='booked_services')
+    service_name = models.CharField(max_length=150)
+    service_price = models.DecimalField(max_digits=8, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.service_name} ({self.service_price})"
     
 class Payment(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name="payments")

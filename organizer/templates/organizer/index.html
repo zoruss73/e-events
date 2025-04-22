@@ -2,220 +2,254 @@
 {% load static %}
 
 {% block title %}
-E-Events | Organizer
-{% endblock title %}
+  E-Events | Organizer
+{% endblock %}
 {% block css %}
 
 {% endblock %}
 
 {% block content %}
   {% include 'components/sidebar.html' %}
+
+  <script>
+    console.log("Events:", {{ events|safe }});
+    document.addEventListener('DOMContentLoaded', function () {
+      var calendarEl = document.getElementById('calendar');
   
-    
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: {{ events|safe }},
+      });
+  
+      calendar.render();
+      const sidebarToggleBtn = document.querySelector('.toggle-sidebar-btn'); 
+      if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', function () {
+          
+          setTimeout(() => {
+            calendar.updateSize();
+          }, 300); 
+        });
+      }
+    });
+  </script>
 
-    <section class="section dashboard">
-      <div class="row">
-        
-        {% comment %}Total Bookings{% endcomment %}
-        <div class="col-xxl-3 col-md-6">
-          <div class="card info-card sales-card d-flex justify-content-center">
-            <div class="card-body">
-              <h4 class="card-title">Bookings</h4>
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-book"></i>
-                </div>
-                <div class="ps-3">
-                  <h3>10</h3>
-                </div>
+  <section class="section dashboard">
+    <div class="row">
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card sales-card d-flex justify-content-center">
+          <div class="card-body">
+            <h4 class="card-title">Bookings:</h4>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-book"></i>
+              </div>
+              <div class="ps-3">
+                <h3>
+                  {% if bookings_count %}{{bookings_count}} {% else %}0{% endif %}
+                </h3>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {% comment %}Packages Offer{% endcomment %}
-        <div class="col-xxl-3 col-md-6">
-          <div class="card info-card packages-card d-flex justify-content-center">
-            <div class="card-body">
-              <h4 class="card-title">Packages Offer</h4>
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-box"></i>
-                </div>
-                <div class="ps-3">
-                  <h3>300</h3>
-                </div>
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card packages-card d-flex justify-content-center">
+          <div class="card-body">
+            <h4 class="card-title">Services Offer:</h4>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-box"></i>
+              </div>
+              <div class="ps-3">
+                <h3>
+                  {% if services_count %}
+                  {{services_count}}
+                  {% else %}
+                  0
+                  {% endif %}
+                </h3>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {% comment %}Pending payments{% endcomment %}
-        <div class="col-xxl-3 col-md-6">
-          <div class="card info-card pending-card d-flex justify-content-center">
-            <div class="card-body">
-              <h4 class="card-title">To confirm payments</h4>
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-three-dots"></i>
-                </div>
-                <div class="ps-3">
-                  <h3>5</h3>
-                </div>
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card pending-card d-flex justify-content-center">
+          <div class="card-body">
+            <h4 class="card-title">Users:</h4>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-person"></i>
+              </div>
+              <div class="ps-3">
+                <h3>
+                  {% if user_count %}
+                  {{user_count}}
+                  {% else %}
+                  0
+                  {% endif %}
+                </h3>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {% comment %}No. of supplier{% endcomment %}
-        <div class="col-xxl-3 col-md-6">
-          <div class="card info-card supplier-card d-flex justify-content-center">
-            <div class="card-body">
-              <h4 class="card-title">No. of suppliers</h4>
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-boxes"></i>
-                </div>
-                <div class="ps-3">
-                  <h3>20</h3>
-                </div>
+      {% comment %} <div class="col-xxl-3 col-md-6">
+        <div class="card info-card supplier-card d-flex justify-content-center">
+          <div class="card-body">
+            <h4 class="card-title">No. of suppliers</h4>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-boxes"></i>
+              </div>
+              <div class="ps-3">
+                <h3>20</h3>
               </div>
             </div>
           </div>
         </div>
+      </div>  {% endcomment %}
+      <div class="col-xxl-8 col-md-12">
+        <div id="calendar" class="mb-4"></div>
+      </div>
 
-        {% comment %} Reports{% endcomment %}
-        <div class="col-xxl-8 col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title">Reports</h4>
-              <div id="reportsChart"></div>
+      <div class="col-xxl-4 col-md-12 order-3 order-xxl-1">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">Recent Activity</div>
+            <div class="activity">
+              {% for log in logs %}
+                <div class="activity-item d-flex">
+                  <div class="activite-label col-5">
+                    <small class="text-wrap">{{ log.created_at|timesince }} ago</small>
+                  </div>
+                  <i class="bi bi-circle-fill activity-badge {% if log.activity == 'Add' %}
+                      text-success
+                    {% elif log.activity == 'Update' %}
+                      text-info
+                    {% else %}
+                      text-danger
+                    {% endif %} align-self-start">
+
+                  </i>
+                  <div class="activity-content">
+                    {% with words=log.description.split %}
+                      <strong>{{ words.0 }}</strong> {{ words|slice:'1:'|join:' ' }}
+                    {% endwith %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div> 
+
+      {% comment %}Reports{% endcomment %}
+       <div class="col-xxl-6 col-md-12 order-1 order-xxl-2">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Top-picked services</h4>
+            <div id="reportsChart"></div>
+            <script>
+              document.addEventListener('DOMContentLoaded', () => {
+                const serviceStats = JSON.parse('{{ service_stats|safe }}');
+            
+                const serviceNames = serviceStats.map(item => item.service_name);
+                const selectedCounts = serviceStats.map(item => item.total_booked);
+            
+                new ApexCharts(document.querySelector('#reportsChart'), {
+                  series: [
+                    {
+                      name: 'Selected Count',
+                      data: selectedCounts
+                    },
+                  ],
+                  chart: {
+                    height: 350,
+                    type: 'bar',
+                  },
+                  plotOptions: {
+                    bar: {
+                      horizontal: false,
+                      columnWidth: '55%',
+                      endingShape: 'rounded'
+                    },
+                  },
+                  dataLabels: {
+                    enabled: false
+                  },
+                  xaxis: {
+                    categories: serviceNames
+                  },
+                  colors: ['#2eca6a'],
+                  
+                }).render();
+              });
+            </script>
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-6 col-md-12 order-2 order-xxl-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">Booking per month (2025)</div>
+            <div id="weddingChart">
               <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                  new ApexCharts(document.querySelector('#reportsChart'), {
-                    series: [
-                      {
-                        name: 'Booking',
-                        data: [31, 40, 28, 51, 42, 82, 56]
+                document.addEventListener("DOMContentLoaded", () => {
+                  const weddingStats = JSON.parse('{{ wedding_stats|escapejs }}');
+              
+                  const weddingMonths = weddingStats.map(item => item.month);
+                  const weddingCounts = weddingStats.map(item => item.count);
+              
+                  new ApexCharts(document.querySelector('#weddingChart'), {
+                      series: [
+                          {
+                              name: 'Wedding Bookings',
+                              data: weddingCounts
+                          },
+                      ],
+                      chart: {
+                        height: 350,
+                        type: 'line',
+                        zoom: {
+                          enabled: false
+                        }
                       },
-                    ],
-                    chart: {
-                      height: 350,
-                      type: 'area',
-                      toolbar: {
-                        show: false
-                      }
-                    },
-                    markers: {
-                      size: 4
-                    },
-                    colors: ['#2eca6a', '#4154f1', '#ff771d'],
-                    fill: {
-                      type: 'gradient',
-                      gradient: {
-                        shadeIntensity: 1,
-                        opacityFrom: 0.3,
-                        opacityTo: 0.4,
-                        stops: [0, 90, 100]
-                      }
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    stroke: {
-                      curve: 'smooth',
-                      width: 2
-                    },
-                    xaxis: {
-                      type: 'datetime',
-                      categories: ['2018-09-19T00:00:00.000Z', '2018-09-19T01:30:00.000Z', '2018-09-19T02:30:00.000Z', '2018-09-19T03:30:00.000Z', '2018-09-19T04:30:00.000Z', '2018-09-19T05:30:00.000Z', '2018-09-19T06:30:00.000Z']
-                    },
-                    tooltip: {
-                      x: {
-                        format: 'dd/MM/yy HH:mm'
-                      }
-                    }
-                  }).render()
+                      dataLabels: {
+                        enabled: false
+                      },
+                      stroke: {
+                        curve: 'straight'
+                      },
+                      grid: {
+                        row: {
+                          colors: ['#f3f3f3', 'transparent'],
+                          opacity: 0.5
+                        },
+                      },
+                      xaxis: {
+                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                      },
+                  }).render();
                 })
               </script>
+            
             </div>
           </div>
         </div>
-        
-        {% comment %} Recent Activity {% endcomment %}
-        <div class="col-xxl-4 col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <div class="card-title">Recent Activity</div>
-              <div class="activity">
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">32 min</div>
-                  <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                  <div class="activity-content">
-                    Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                  </div>
-                </div>
-                
-                <div class="activity-item d-flex">
-                  <div class="activite-label">32 min</div>
-                  <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                  <div class="activity-content">
-                    Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                  </div>
-                </div>
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">32 min</div>
-                  <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                  <div class="activity-content">
-                    Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                  </div>
-                </div>
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">32 min</div>
-                  <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-                  <div class="activity-content">
-                    Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                  </div>
-                </div>
-                
-                <div class="activity-item d-flex">
-                  <div class="activite-label">32 min</div>
-                  <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
-                  <div class="activity-content">
-                    Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                  </div>
-                </div>
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">32 min</div>
-                  <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                  <div class="activity-content">
-                    Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                  </div>
-                </div>
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">32 min</div>
-                  <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                  <div class="activity-content">
-                    Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
-    </section>
-  
+
+      
+    </div>
+  </section>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
 {% endblock %}
 
 {% block js %}

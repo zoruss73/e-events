@@ -1,12 +1,14 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate
-from .models import Booking, Services
+from .models import Booking, Services, UserProfile
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from organizer.models import Package
 
-class RegistrationForm(forms.ModelForm):
+class RegistrationForm(UserCreationForm):
     first_name = forms.CharField(
         required=True,
         label="First name:",
@@ -54,7 +56,7 @@ class RegistrationForm(forms.ModelForm):
             'placeholder': '•••••••••',
         })
     )
-    
+    # profile_image = forms.ImageField(required=False)
     
     class Meta:
         model = User    
@@ -66,8 +68,15 @@ class RegistrationForm(forms.ModelForm):
         password2 = cleaned_data.get("password2")
         email = cleaned_data.get("username")
 
-        if password1 and password2 and password1 != password2:
-            self.add_error("password2", "Passwords do not match")
+        if password1 and password2:
+            if password1 != password2:
+                self.add_error('password2', "Passwords do not match.")
+                
+            try:
+                validate_password(password1)
+            except ValidationError as e:
+                self._errors['password1'] = self.error_class([""])
+                self.add_error('password2', e)
             
         if email and User.objects.filter(email=email).exists():
             self.add_error("username", "A user with this email already exists.")
@@ -81,6 +90,8 @@ class RegistrationForm(forms.ModelForm):
         user.is_active = False
         if commit:
             user.save()
+            UserProfile.objects.get_or_create(user=user)
+
         return user
     
 class LoginForm(forms.Form):

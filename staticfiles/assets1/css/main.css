@@ -1226,7 +1226,59 @@ section,
   border: 2px solid var(--accent-color);
 }
 
-/* */
+/* 
+  Awards
+*/
+.features .features-item {
+  color: color-mix(in srgb, var(--default-color), transparent 20%);
+}
+
+.features .features-item+.features-item {
+  margin-top: 100px;
+}
+
+@media (max-width: 640px) {
+  .features .features-item+.features-item {
+    margin-top: 40px;
+  }
+}
+
+.features img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+
+.features .features-item h3 {
+  font-weight: 700;
+  font-size: 26px;
+}
+
+.features .features-item ul {
+  list-style: none;
+  padding: 0;
+}
+
+.features .features-item ul li {
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.features .features-item ul li:last-child {
+  padding-bottom: 0;
+}
+
+.features .features-item ul i {
+  font-size: 20px;
+  padding-right: 4px;
+  color: var(--accent-color);
+}
+
+.features .features-item p:last-child {
+  margin-bottom: 0;
+}
 
 /*--------------------------------------------------------------
 # Pricing Section

@@ -1,35 +1,42 @@
 <header id="header" class="header d-flex align-items-center fixed-top">
   <div class="container-fluid container-xl position-relative d-flex align-items-center">
-    <a href="{% url 'user:landingpage' %}" class="logo d-flex align-items-center me-auto">
+    <a href="{% if request.path == "/" %}#{% else %}{% url 'user:landingpage' %}{% endif %}" class="logo d-flex align-items-center me-auto">
       <!-- Uncomment the line below if you also wish to use an image logo -->
       <!-- <img src="assets/img/logo.png" alt=""> -->
       <h1 class="sitename">E-Events</h1>
     </a>
 
-    {% if request.path != "/login/" %}
-    <nav id="navmenu" class="navmenu">
-      <ul>
-        <li>
-          <a href="#" class="active">Home<br /></a>
+    
+    <nav class="navbar navmenu" id="navmenu">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link" {% if request.path == "/" %} href="#hero" class="active" {% endif %} href="{% url 'user:landingpage' %}">Home</a>
         </li>
-        <li>
-          <a href="#about">About</a>
+        <li class="nav-item">
+          <a class="nav-link" {% if request.path == "/" %} href="#about" {% endif %} href="{% url 'user:landingpage' %}">About</a>
         </li>
-        <li>
-          <a href="#projects">Projects</a>
+        <li class="nav-item">
+          <a class="nav-link" {% if request.path == "/" %} href="#projects" {% endif %} href="{% url 'user:landingpage' %}">Projects</a>
         </li>
-        <li>
-          <a href="#packages">Packages</a>
+        <li class="nav-item">
+          <a class="nav-link" {% if request.path == "/" %} href="#awards" {% endif %} href="{% url 'user:landingpage' %}">Awards</a>
         </li>
-        <li>
-          <a href="#contactus">Contact</a>
+        <li class="nav-item">
+          <a class="nav-link" {% if request.path == "/" %} href="#packages" {% endif %} href="{% url 'user:landingpage' %}">Packages</a>
+        </li class="nav-item">
+        <li class="nav-item">
+          <a class="nav-link" {% if request.path == "/" %} href="#faq" {% endif %} href="{% url 'user:landingpage' %}">FAQ's</a>
+        </li class="nav-item">
+        <li class="nav-item">
+          <a class="nav-link" href="#contactus">Contact</a>
         </li>
-        <li>
-          <a href="{% url 'user:login' %}" class="btn-login-nav">Log in</a>
-        </li>
+        {% if request.path != "/login/" %}
+          <li>
+            <a href="{% url 'user:login' %}" class="btn-login-nav">Log in</a>
+          </li>
+        {% endif %}
       </ul>
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
-    {% endif %}
   </div>
 </header>

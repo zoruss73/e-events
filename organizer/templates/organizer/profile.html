@@ -1,0 +1,85 @@
+{% extends "components/base.html" %}
+
+{% block title %}
+  E-Events | Settings
+{% endblock %}
+
+{% block content %}
+{% include 'components/sidebar.html' %}
+<section class="section mt-5">
+    <div class="card">
+      <div class="card-body p-5">
+        <form action="{% url 'organizer:profile' %}" method="post" id="form_update_user_details_{{request.user.id}}" enctype="multipart/form-data" >
+          {% csrf_token %}
+          <div class="row d-flex justify-content-between">
+            <div class="col-lg-8 order-2 order-lg-1">
+              <div class="row ">
+                <div class="col-md-6 col-sm-12 mb-4 ">
+                  <label for="first_name" class="form-label fw-bold">First Name:</label>
+                  <input type="text" name="first_name" class="form-control" value="{{request.user.first_name}}">
+                </div>
+                <div class="col-md-6 col-sm-12 mb-4">
+                  <label for="last_name" class="form-label fw-bold">Last Name:</label>
+                  <input type="text" name="last_name" class="form-control" value="{{request.user.last_name}}">
+                </div>
+                <div class="col-12 mb-4">
+                  <label for="user_email" class="form-label fw-bold">Email Address:</label>
+                  <input type="email" class="form-control" disabled value="{{request.user.username}}">
+                  {% comment %} <div class="text-end">
+                    <a href="" class="fw-bold mt-2 mb-0">Change</a>
+                  </div> {% endcomment %}
+                </div>
+                <div class="col-12 mb-4">
+                  <label for="user_password" class="form-label fw-bold">Password:</label>
+                  <input type="password" class="form-control" disabled value="{{ request.user.password|slice:"20" }}">
+                  <div class="text-end">
+                    <a href="{% url 'organizer:change-password' %}" id="updatePasswordBtn" class="fw-bold mt-2 mb-0">Change password</a>
+                  </div>
+                </div>
+                <div class="col-12">
+                  
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 gy-4 text-center order-1 order-lg-2 mb-3">
+              <img src="{{ request.user.userprofile.profile_img.url }}" class="rounded-circle img-fluid mb-3" width="200" id="profile_preview" alt="">
+              <br>
+              <button class="btn btn-primary mt-3" type="button" onclick="document.getElementById('profile_img_input').click();">Upload a picture</button>
+              <input type="file" class="form-control mt-2 d-none" accept="image/*" id="profile_img_input" name="image_input_1" />
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('profile_img_input').addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById('profile_preview').src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    });
+    
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelector("form").addEventListener("submit", function (e) {
+          Swal.fire({
+              title: "Please wait...",
+              text: "Updating your personal details.",
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              didOpen: () => {
+                  Swal.showLoading();
+              }
+          });
+      });
+  });
+  </script>
+{% endblock content %}

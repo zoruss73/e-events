@@ -200,8 +200,22 @@
    */
   document.querySelectorAll('.faq-item h3, .faq-item .faq-toggle').forEach((faqItem) => {
     faqItem.addEventListener('click', () => {
-      faqItem.parentNode.classList.toggle('faq-active');
+      const allFaqItems = document.querySelectorAll('.faq-item');
+      
+      // Check if the clicked FAQ item is already active
+      if (faqItem.parentNode.classList.contains('faq-active')) {
+        // If it's active, remove the faq-active class to close it
+        faqItem.parentNode.classList.remove('faq-active');
+      } else {
+        // If it's not active, close all FAQs and then open the clicked one
+        allFaqItems.forEach(item => {
+          item.classList.remove('faq-active');
+        });
+        faqItem.parentNode.classList.add('faq-active');
+      }
     });
   });
+  
+  
 
 })();

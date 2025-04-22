@@ -42,11 +42,16 @@ E-Events | Bookings
               <td>₱ {{booking.remaining_balance|floatformat:0|intcomma}}</td>
               {% comment %} <td>{{booking.package_price|floatformat:0|intcomma}}</td> {% endcomment %}
               <td>
-                <p class="d-inline-block px-2 mb-0 {% if booking.payment_status == "pending" %}bg-warning {% else %}bg-success{% endif %}" style="border-radius: 5px;">{{booking.payment_status|capfirst}}</p>
+                <p class="d-inline-block px-2 mb-0 {% if booking.is_completed %}bg-success text-light{% else %} bg-warning{% endif %}" style="border-radius: 5px;">
+                  {% if booking.is_completed %}
+                  Completed
+                  {% else %}
+                  Pending
+                  {% endif %}
+                </p>
               </td>
               <td>
-                <a href="" class="bg-info px-2 text-dark " style="border-radius: 5px;">View</a>
-                <a href="" class="bg-success px-2 text-light" style="border-radius: 5px;">Edit</a> 
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewBookingDetails{{booking.booking_id}}"><i class="bi bi-eye"></i></button>
               </td>
             </tr>
             {% endfor %}
@@ -56,5 +61,56 @@ E-Events | Bookings
     </div>
 </section>
 
-
+{% for booking in bookings %}
+<div class="modal fade" id="viewBookingDetails{{booking.booking_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Booking Details:</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <label for="package_service" class="form-label d-block fw-bold">Package:</label>
+            <input type="text" readonly value="{{ booking.package }}" class="form-control" />
+          </div>
+          <div class="col-12 mt-3">
+            <label for="package_service" class="form-label d-block fw-bold">Package Service:</label>
+            <div class="form-control" id="service_included">
+              {% for service in booking.booked_services.all %}
+                <label for="service_{{forloop.counter}}" class="btn btn-primary text-light me-2 my-2">{{service.service_name}}</label>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col-12 mt-3">
+            <label for="package_name" class="form-label fw-bold">Wedding Date:</label>
+            <input type="text" readonly value="{{ booking.wedding_date }}" class="form-control" />
+          </div>
+          <div class="col-12 mt-3">
+            <label for="package_name" class="form-label fw-bold">Total Price:</label>
+            <input type="text" readonly value="{{ booking.package_price|floatformat:0|intcomma }}" class="form-control" />
+          </div>
+          <div class="col-12 mt-3">
+            <label for="package_name" class="form-label fw-bold">Your Downpayment (20%):</label>
+            <input type="text" readonly value="{{ booking.package_price|subtract:booking.remaining_balance|floatformat:0|intcomma }}" class="form-control" />
+          </div>
+          <div class="col-12 mt-3">
+            <label for="package_name" class="form-label fw-bold">Remaining Balance:</label>
+            <input type="text" readonly value="{{ booking.remaining_balance|floatformat:0|intcomma }}" class="form-control" />
+          </div>
+          <div class="col-12 mt-3">
+            <label for="package_name" class="form-label fw-bold">Booked Date:</label>
+            <input type="text" readonly value="{{ booking.booking_date }}" class="form-control" />
+          </div>
+        </div>
+      </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 {% endblock content %}
