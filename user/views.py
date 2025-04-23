@@ -283,7 +283,7 @@ def dashboard(request):
         upcoming_event = Booking.objects.filter(wedding_date__gte=today, user=request.user).order_by('wedding_date').first()
         booked_service_counts = BookedService.objects.values('service_name').annotate(total_booked=Count('id'))
         chats = getMessage(request)
-        days_left = (upcoming_event.wedding_date - today).days if days_left else 0
+        days_left = (upcoming_event.wedding_date - today).days if upcoming_event else None
         print(days_left, "days left.")
         
         context = {
