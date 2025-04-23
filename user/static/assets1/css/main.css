@@ -12,13 +12,15 @@
 --------------------------------------------------------------*/
 /* Fonts */
 :root {
-  --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --heading-font: "Poppins",  sans-serif;
-  --nav-font: "Poppins",  sans-serif;
+  --default-font: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --heading-font: "Poppins", sans-serif;
+  --nav-font: "Poppins", sans-serif;
 }
 
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
-:root { 
+:root {
   --background-color: #ffffff; /* Background color for the entire website, including individual sections */
   --default-color: #212529; /* Default color used for the majority of the text content across the entire website */
   --heading-color: #001973; /* Color for headings, subheadings and title throughout the website 001973 */
@@ -29,7 +31,12 @@
 
 /* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
 :root {
-  --nav-color: rgba(255, 255, 255, 0.6);  /* The default color of the main navmenu links */
+  --nav-color: rgba(
+    255,
+    255,
+    255,
+    0.6
+  ); /* The default color of the main navmenu links */
   --nav-hover-color: #ffffff; /* Applied to main navmenu links when they are hovered over or active */
   --nav-mobile-background-color: #ffffff; /* Used as the background color for mobile navigation menu */
   --nav-dropdown-background-color: #ffffff; /* Used as the background color for dropdown items that appear when hovering over primary navigation items */
@@ -93,7 +100,10 @@ h6 {
 .pulsating-play-btn {
   width: 94px;
   height: 94px;
-  background: radial-gradient(var(--accent-color) 50%, color-mix(in srgb, var(--accent-color), transparent 75%) 52%);
+  background: radial-gradient(
+    var(--accent-color) 50%,
+    color-mix(in srgb, var(--accent-color), transparent 75%) 52%
+  );
   border-radius: 50%;
   display: block;
   position: relative;
@@ -248,7 +258,14 @@ h6 {
   font-size: 30px;
   margin: 0;
   font-weight: 700;
-  color: var(--heading-color);
+  background: linear-gradient(90deg, #00dbde, #fc00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: glow 1.5s infinite alternate;
+}
+@keyframes glow {
+  from { text-shadow: 0 0 10px #00dbde; }
+  to { text-shadow: 0 0 20px #fc00ff; }
 }
 
 .header .btn-getstarted,
@@ -342,7 +359,7 @@ h6 {
     padding-right: 0;
   }
 
-  .navmenu li:hover>a,
+  .navmenu li:hover > a,
   .navmenu .active,
   .navmenu .active:focus {
     color: var(--nav-hover-color) !important;
@@ -387,11 +404,11 @@ h6 {
 
   .navmenu .dropdown ul a:hover,
   .navmenu .dropdown ul .active:hover,
-  .navmenu .dropdown ul li:hover>a {
+  .navmenu .dropdown ul li:hover > a {
     color: var(--nav-dropdown-hover-color) !important;
   }
 
-  .navmenu .dropdown:hover>ul {
+  .navmenu .dropdown:hover > ul {
     opacity: 1;
     top: 100%;
     visibility: visible;
@@ -403,7 +420,7 @@ h6 {
     visibility: hidden;
   }
 
-  .navmenu .dropdown .dropdown:hover>ul {
+  .navmenu .dropdown .dropdown:hover > ul {
     opacity: 1;
     top: 0;
     left: -100%;
@@ -473,7 +490,11 @@ h6 {
     justify-content: center;
     border-radius: 50%;
     transition: 0.3s;
-    background-color: color-mix(in srgb, var(--accent-color), transparent 90%) !important;
+    background-color: color-mix(
+      in srgb,
+      var(--accent-color),
+      transparent 90%
+    ) !important;
   }
 
   .navmenu a i:hover,
@@ -511,7 +532,7 @@ h6 {
     background-color: rgba(33, 37, 41, 0.1);
   }
 
-  .navmenu .dropdown>.dropdown-active {
+  .navmenu .dropdown > .dropdown-active {
     display: block;
     background-color: rgba(33, 37, 41, 0.03);
   }
@@ -538,7 +559,7 @@ h6 {
     transition: 0.3s;
   }
 
-  .mobile-nav-active .navmenu>ul {
+  .mobile-nav-active .navmenu > ul {
     display: block;
   }
 }
@@ -555,7 +576,8 @@ h6 {
 
 .footer .footer-top {
   padding-top: 50px;
-  border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  border-top: 1px solid
+    color-mix(in srgb, var(--default-color), transparent 90%);
 }
 
 .footer .footer-about .logo {
@@ -650,7 +672,8 @@ h6 {
 .footer .copyright {
   padding-top: 30px;
   padding-bottom: 30px;
-  border-top: 1px solid color-mix(in srgb, var(--heading-color), transparent 90%);
+  border-top: 1px solid
+    color-mix(in srgb, var(--heading-color), transparent 90%);
 }
 
 .footer .copyright p {
@@ -769,7 +792,11 @@ h6 {
 
 .page-title:before {
   content: "";
-  background-color: color-mix(in srgb, var(--background-color), transparent 30%);
+  background-color: color-mix(
+    in srgb,
+    var(--background-color),
+    transparent 30%
+  );
   position: absolute;
   inset: 0;
 }
@@ -799,11 +826,11 @@ h6 {
   color: var(--contrast-color);
 }
 
-.page-title .breadcrumbs ol li+li {
+.page-title .breadcrumbs ol li + li {
   padding-left: 10px;
 }
 
-.page-title .breadcrumbs ol li+li::before {
+.page-title .breadcrumbs ol li + li::before {
   content: "/";
   display: inline-block;
   padding-right: 10px;
@@ -823,7 +850,6 @@ section,
 }
 
 @media (max-width: 1199px) {
-
   section,
   .section {
     scroll-margin-top: 66px;
@@ -884,7 +910,6 @@ section,
 # Nav Section
 */
 
-
 /*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
@@ -894,7 +919,6 @@ hero {
   position: relative;
   padding: 120px 0 60px 0;
 }
-
 
 .hero .hero-bg {
   position: absolute;
@@ -924,18 +948,16 @@ hero {
   transition: opacity 0.3s ease-in-out;
 }
 
-.video-container video::hover{
+.video-container video::hover {
   opacity: 1; /* Adjust this value to control transparency */
 }
 
-.hero .small-video video{
+.hero .small-video video {
   width: 80%;
   height: 80%;
   border-radius: 32px;
   overflow: hidden;
-
 }
-
 
 .hero .small-video {
   position: absolute;
@@ -945,15 +967,13 @@ hero {
 }
 .hero .small-video:hover {
   transform: scale(1.05);
-
 }
 
-.hero .hero-text-area{
+.hero .hero-text-area {
   padding-top: 10%;
-
 }
 
-.hero .small-video video{
+.hero .small-video video {
   width: 80%;
   height: 80%;
   border-radius: 32px;
@@ -966,14 +986,11 @@ hero {
   border-radius: 12px;
 }
 
-
-
 .hero .container {
   position: relative;
   z-index: 3;
   top: 10vh;
   text-align: center;
-
 }
 
 .hero h2 {
@@ -982,7 +999,6 @@ hero {
   font-size: 40px;
   font-weight: 700;
 }
-
 
 @media (max-width: 575px) {
   .hero h2 {
@@ -1005,7 +1021,7 @@ hero {
   }
 }
 
-@media screen and (min-device-width: 576px) and (max-device-width: 975px)  {
+@media screen and (min-device-width: 576px) and (max-device-width: 975px) {
   .hero h2 {
     font-size: 30px;
   }
@@ -1021,18 +1037,15 @@ hero {
   .hero .container {
     position: relative;
     z-index: 3;
-    
   }
   .hero .container {
     position: relative;
     z-index: 3;
     top: 0 vh;
     text-align: center;
-  
   }
-  .hero .hero-text-area{
+  .hero .hero-text-area {
     padding-top: 0;
-  
   }
 }
 
@@ -1052,7 +1065,6 @@ hero {
   .hero .container {
     position: relative;
     z-index: 3;
-    
   }
 }
 
@@ -1072,19 +1084,15 @@ hero {
   .hero .container {
     position: relative;
     z-index: 3;
-    
   }
-  .hero .small-video video{
+  .hero .small-video video {
     width: 80%;
     height: 80%;
     border-radius: 32px;
     overflow: hidden;
     margin-top: 10%;
-  
   }
 }
-
-
 
 .hero p {
   font-size: 15px;
@@ -1095,19 +1103,17 @@ hero {
 .hero .book-now-btn {
   background-color: var(--accent-color);
   color: #ffffff;
-  padding:  10px 35px;
+  padding: 10px 35px;
   border-radius: 10px;
   font-size: 18px;
   font-weight: 500;
   font-family: var(--heading-font);
   border: 1px solid var(--accent-color);
-  transition: transform 1s ;
-        }
-        .button:hover {
-            scale: 1.2;
-        }
-        
-
+  transition: transform 1s;
+}
+.button:hover {
+  scale: 1.2;
+}
 
 .hero form {
   background: color-mix(in srgb, var(--default-color) 5%, white 90%);
@@ -1300,7 +1306,7 @@ hero {
 .projects .container .view-more-btn {
   background-color: var(--accent-color);
   color: var(--background-color);
-  padding:  8px 35px 12px 35px;
+  padding: 8px 35px 12px 35px;
   border-radius: 50px;
   font-size: 16px;
   font-weight: 500;
@@ -1409,12 +1415,12 @@ hero {
   color: color-mix(in srgb, var(--default-color), transparent 20%);
 }
 
-.features .features-item+.features-item {
+.features .features-item + .features-item {
   margin-top: 100px;
 }
 
 @media (max-width: 640px) {
-  .features .features-item+.features-item {
+  .features .features-item + .features-item {
     margin-top: 40px;
   }
 }
@@ -1424,7 +1430,6 @@ hero {
   height: 300px;
   object-fit: cover;
 }
-
 
 .features .features-item h3 {
   font-weight: 700;
@@ -1471,7 +1476,6 @@ hero {
 .packages .package-item:hover {
   transform: scale(1.05);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-  
 }
 
 .packages h3 {
@@ -1497,7 +1501,7 @@ hero {
   transition: background 0.6s ease, -webkit-background-clip 0.6s ease;
 }
 
-.packages .package-item:hover h4,sup {
+.packages .package-item:hover h4, sup {
   background: linear-gradient(60deg, #007bff, #0e1d34);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1565,7 +1569,7 @@ hero {
   border-top-color: var(--accent-color);
 }
 
-.packages .featured .buy-btn{
+.packages .featured .buy-btn {
   background: var(--accent-color);
   color: var(--contrast-color);
 }
@@ -1920,7 +1924,8 @@ hero {
   display: block;
   line-height: 1;
   padding: 8px 0 8px 15px;
-  border-left: 3px solid color-mix(in srgb, var(--default-color), transparent 70%);
+  border-left: 3px solid
+    color-mix(in srgb, var(--default-color), transparent 70%);
   margin: 20px 0;
   color: color-mix(in srgb, var(--default-color), transparent 20%);
   transition: 0.3s;
@@ -2094,16 +2099,13 @@ hero {
   margin-top: 16px;
   margin-bottom: 16px;
   margin-left: 32px;
-
 }
 
-
 @media (max-width: 575px) {
-  .contactus .info-box-card{
+  .contactus .info-box-card {
     margin: 0;
   }
-  }
-
+}
 
 .contactus .info-box i {
   font-size: 38px;
@@ -2143,211 +2145,209 @@ hero {
   color: var(--background-color);
 }
 
-.contactus{
+.contactus {
   display: block;
   justify-items: center;
 }
 
+.contactus .container3 {
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 480px;
+}
 
- .contactus .container3{
-      
-            background-color: #fff;
-            border-radius: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            min-height: 480px;
-          }
-          
-          .contactus .container3 p{
-            font-size: 14px;
-            line-height: 20px;
-            letter-spacing: 0.3px;
-            margin: 20px 0;
-          }
-          
-          .contactus .container3 span{
-            font-size: 12px;
-          }
-          
-          .contactus .container3 a{
-            color: #333;
-            font-size: 13px;
-            text-decoration: none;
-            margin: 15px 0 10px;
-          }
-          
-          .contactus .container3 button{
-            background-color: #2da0a8;
-            color: #fff;
-            font-size: 12px;
-            padding: 10px 45px;
-            border: 1px solid transparent;
-            border-radius: 8px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-top: 10px;
-            cursor: pointer;
-          }
-          
-          .contactus .container3 button.hidden{
-            background-color: transparent;
-            border-color: #fff;
-          }
-          
-          .contactus .container3 form{
-            background-color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 0 40px;
-            height: 100%;
-          }
-          
-          .contactus .container3 input{
-            background-color: #eee;
-            border: none;
-            margin: 8px 0;
-            padding: 10px 15px;
-            font-size: 13px;
-            border-radius: 8px;
-            width: 100%;
-            outline: none;
-          }
-          
-          .contactus .form-container{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 0;
-            height: 100%;
-            transition: all 0.6s ease-in-out;
-          }
-          
-          .contactus .sign-in{
-            display: flex;
-            left: 0;
-            width: 50%;
-            z-index: 2;
-          }
-          
-          .contactus .container3.active .sign-in{
-            transform: translateX(100%);
-          }
-          
-          .contactus .sign-up{
-            left: 0;
-            width: 50%;
-            opacity: 0;
-            z-index: 1;
-          }
-          
-          .contactus .container3.active .sign-up{
-            transform: translateX(100%);
-            opacity: 1;
-            z-index: 5;
-            animation: move 0.6s;
-          }
-          
-          @keyframes move{
-            0%, 49.99%{
-                opacity: 0;
-                z-index: 1;
-            }
-            50%, 100%{
-                opacity: 1;
-                z-index: 5;
-            }
-          }
-          
-          .contactus .social-icons{
-            margin: 20px 0;
-          }
-          
-          .contactus .social-icons a{
-            border: 1px solid #ccc;
-            border-radius: 20%;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 3px;
-            width: 40px;
-            height: 40px;
-          }
-          
-          .contactus .toggle-container{
-            position: absolute;
-            top: 0;
-            left: 50%;
-            width: 50%;
-            height: 100%;
-            overflow: hidden;
-            transition: all 0.6s ease-in-out;
-            border-radius: 150px 0 0 100px;
-            z-index: 20;
-          }
-          
-          .contactus .container3.active .toggle-container{
-            transform: translateX(-100%);
-            border-radius: 0 150px 100px 0;
-          }
-          
-          .contactus .toggle{
-            background-color: #2da0a8;
-            height: 100%;
-            background: linear-gradient(to right, #5c6bc0, #2da0a8);
-            color: #fff;
-            position: relative;
-            left: -100%;
-            height: 100%;
-            width: 200%;
-            transform: translateX(0);
-            transition: all 0.6s ease-in-out;
-          }
-          
-          .contactus .container3.active .toggle{
-            transform: translateX(50%);
-          }
-          
-          .contactus .toggle-panel{
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 0 30px;
-            text-align: center;
-            top: 0;
-            transform: translateX(0);
-            transition: all 0.6s ease-in-out;
-          }
-          
-          .contactus .toggle-left{
-            transform: translateX(-200%);
-          }
-          
-          .contactus .container3.active .toggle-left{
-            transform: translateX(0);
-          }
-          
-          .contactus .toggle-right{
-            right: 0;
-            transform: translateX(0);
-          }
-          
-          .contactus .container3.active .toggle-right{
-            transform: translateX(200%);
-          }
+.contactus .container3 p {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.3px;
+  margin: 20px 0;
+}
 
+.contactus .container3 span {
+  font-size: 12px;
+}
 
-@media (max-width: 975px){
+.contactus .container3 a {
+  color: #333;
+  font-size: 13px;
+  text-decoration: none;
+  margin: 15px 0 10px;
+}
 
+.contactus .container3 button {
+  background-color: var(--accent-color);
+  color: #fff;
+  font-size: 12px;
+  padding: 10px 45px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.contactus .container3 button.hidden {
+  background-color: transparent;
+  border-color: #fff;
+}
+
+.contactus .container3 form {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  height: 100%;
+}
+
+.contactus .container3 input, .contactus .container3 textarea {
+  background-color: #eee;
+  border: none;
+  margin: 8px 0;
+  padding: 10px 15px;
+  font-size: 13px;
+  border-radius: 8px;
+  width: 100%;
+  outline: none;
+}
+
+.contactus .form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+}
+
+.contactus .sign-in {
+  display: flex;
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.contactus .container3.active .sign-in {
+  transform: translateX(100%);
+}
+
+.contactus .sign-up {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
+
+.contactus .container3.active .sign-up {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: move 0.6s;
+}
+
+@keyframes move {
+  0%,
+  49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+  50%,
+  100% {
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+.contactus .social-icons {
+  margin: 20px 0;
+}
+
+.contactus .social-icons a {
+  border: 1px solid #ccc;
+  border-radius: 20%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 3px;
+  width: 40px;
+  height: 40px;
+}
+
+.contactus .toggle-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: all 0.6s ease-in-out;
+  border-radius: 150px 0 0 100px;
+  z-index: 20;
+}
+
+.contactus .container3.active .toggle-container {
+  transform: translateX(-100%);
+  border-radius: 0 150px 100px 0;
+}
+
+.contactus .toggle {
+  background-color: #2da0a8;
+  height: 100%;
+  background: linear-gradient(to right, #5c6bc0, #2da0a8);
+  color: #fff;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: all 0.6s ease-in-out;
+}
+
+.contactus .container3.active .toggle {
+  transform: translateX(50%);
+}
+
+.contactus .toggle-panel {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 30px;
+  text-align: center;
+  top: 0;
+  transform: translateX(0);
+  transition: all 0.6s ease-in-out;
+}
+
+.contactus .toggle-left {
+  transform: translateX(-200%);
+}
+
+.contactus .container3.active .toggle-left {
+  transform: translateX(0);
+}
+
+.contactus .toggle-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+.contactus .container3.active .toggle-right {
+  transform: translateX(200%);
+}
+
+@media (max-width: 975px) {
   .contactus .info-box-card {
     position: relative;
     background-color: var(--surface-color);
@@ -2362,23 +2362,20 @@ hero {
     align-items: center;
   }
 
-
   .contactus .info-box i {
     font-size: 14px;
     color: #0028b9;
-
   }
-  
+
   .contactus .info-box h3 {
     font-size: 14px;
     color: #001973;
   }
-  
+
   .contactus .info-box p {
     font-size: 12px;
-
   }
-  
+
   .contactus .info-box-email {
     background-color: var(--surface-color);
     /* box-shadow: 0 3px 20px -2px rgba(0, 0, 0, 0.1);
@@ -2391,7 +2388,7 @@ hero {
     width: 100%;
     height: 100%;
   }
-  
+
   .send-email-btn {
     padding: 8px 32px 10px 32px;
     border: none;
@@ -2399,16 +2396,13 @@ hero {
     background-color: var(--accent-color);
     color: var(--background-color);
   }
-  
-  .contactus{
+
+  .contactus {
     display: block;
     justify-items: center;
   }
-  
 
-
-  .contactus .container3{
-      
+  .contactus .container3 {
     background-color: #fff;
     border-radius: 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
@@ -2418,24 +2412,24 @@ hero {
     min-height: 480px;
     max-height: 700px;
   }
-  
-  .contactus .container3 p{
+
+  .contactus .container3 p {
     font-size: 14px;
     letter-spacing: 0.3px;
   }
-  
-  .contactus .container3 span{
+
+  .contactus .container3 span {
     font-size: 12px;
   }
-  
-  .contactus .container3 a{
+
+  .contactus .container3 a {
     color: #333;
     font-size: 13px;
     text-decoration: none;
     margin: 15px 0 10px;
   }
-  
-  .contactus .container3 button{
+
+  .contactus .container3 button {
     background-color: #2da0a8;
     color: #fff;
     font-size: 12px;
@@ -2448,13 +2442,13 @@ hero {
     cursor: pointer;
     margin-bottom: 10px;
   }
-  
-  .contactus .container3 button.hidden{
+
+  .contactus .container3 button.hidden {
     background-color: transparent;
     border-color: #fff;
   }
-  
-  .contactus .container3 form{
+
+  .contactus .container3 form {
     background-color: #fff;
     display: flex;
     align-items: center;
@@ -2463,8 +2457,8 @@ hero {
     padding: 0 0px;
     height: 100%;
   }
-  
-  .contactus .container3 input{
+
+  .contactus .container3 input {
     background-color: #eee;
     border: none;
     margin: 8px 0;
@@ -2474,72 +2468,72 @@ hero {
     width: 100%;
     outline: none;
   }
-  
-  .contactus .form-container{
+
+  .contactus .form-container {
     position: absolute;
-    top:60%;
+    top: 60%;
     height: 100%;
     transition: all 0.6s ease-in-out;
   }
-  
-  .contactus .sign-in{
+
+  .contactus .sign-in {
     position: relative;
     left: 0;
-   bottom: 0;
+    bottom: 0;
     width: 100%;
     z-index: 2;
   }
-  
-  .form-card-containers{
+
+  .form-card-containers {
     padding-left: 0;
     padding-right: 0;
-    margin-left: 0 ;
+    margin-left: 0;
     margin-right: 0;
     padding-top: 30%;
   }
 
   @media (max-width: 775px) {
-    .form-card-containers{
+    .form-card-containers {
       padding-top: 60%;
     }
-   
   }
 
-
-  .contactus .container3.active .sign-in{
+  .contactus .container3.active .sign-in {
     transform: translateY(100%);
   }
-  
-  .contactus .sign-up{
+
+  .contactus .sign-up {
     left: 0;
     width: 100%;
     opacity: 0;
     z-index: 1;
   }
-  
-  .contactus .container3.active .sign-up{
+
+  .contactus .container3.active .sign-up {
     transform: translateY(-50%);
     opacity: 1;
     z-index: 5;
     animation: move 0.6s;
   }
-  
-  @keyframes move{
-    0%, 49.99%{
-        opacity: 0;
-        z-index: 1;
+
+  @keyframes move {
+    0%,
+    49.99% {
+      opacity: 0;
+      z-index: 1;
     }
-    50%, 100%{
-        opacity: 1;
-        z-index: 5;
+    50%,
+    100% {
+      opacity: 1;
+      z-index: 5;
     }
   }
-  
-  .contactus .social-icons{
+
+  .contactus .social-icons {
     margin: 20px 0;
   }
-  
-  .contactus .social-icons a{
+
+  .contactus .social-icons a {
     border: 1px solid #ccc;
     border-radius: 20%;
     display: inline-flex;
@@ -2549,8 +2543,8 @@ hero {
     width: 40px;
     height: 40px;
   }
-  
-  .contactus .toggle-container{
+
+  .contactus .toggle-container {
     position: absolute;
     top: 50;
     left: 0%;
@@ -2561,13 +2555,13 @@ hero {
     border-radius: 0px 0px 75px 75px;
     z-index: 20;
   }
-  
-  .contactus .container3.active .toggle-container{
+
+  .contactus .container3.active .toggle-container {
     transform: translateY(-50%);
     border-radius: 0 0px 0px 0;
   }
-  
-  .contactus .toggle{
+
+  .contactus .toggle {
     background-color: #2da0a8;
     height: 100%;
     background: linear-gradient(to right, #5c6bc0, #2da0a8);
@@ -2579,12 +2573,12 @@ hero {
     transform: translateY(0);
     transition: all 0.6s ease-in-out;
   }
-  
-  .contactus .container3.active .toggle{
+
+  .contactus .container3.active .toggle {
     transform: translateY(50%);
   }
-  
-  .contactus .toggle-panel{
+
+  .contactus .toggle-panel {
     position: relative;
     width: 100%;
     height: 50%;
@@ -2594,7 +2588,6 @@ hero {
     transition: all 0.6s ease-in-out;
     bottom: 0;
   }
-
 
   .contactus .toggle-left h1 {
     font-size: larger;
@@ -2610,30 +2603,24 @@ hero {
     position: relative;
     padding: 10px 20px;
     bottom: 0;
-
   }
 
-  
-  
-  .contactus .toggle-left{
+  .contactus .toggle-left {
     transform: translateY(-300%);
   }
-  
-  .contactus .container3.active .toggle-left{
+
+  .contactus .container3.active .toggle-left {
     transform: translateY(-30%);
   }
-  
-  .contactus .toggle-right{
+
+  .contactus .toggle-right {
     transform: translateY(-30%);
   }
-  
-  .contactus .container3.active .toggle-right{
+
+  .contactus .container3.active .toggle-right {
     transform: translateY(-300%);
   }
 }
-
-
-
 
 /*--------------------------------------------------------------
 # Get A Quote Section
@@ -2676,31 +2663,35 @@ hero {
   margin-bottom: 20px;
 }
 
-.get-a-quote .php-email-form input[type=text],
-.get-a-quote .php-email-form input[type=email],
+.get-a-quote .php-email-form input[type="text"],
+.get-a-quote .php-email-form input[type="email"],
 .get-a-quote .php-email-form textarea {
   font-size: 14px;
   padding: 10px 15px;
   box-shadow: none;
   border-radius: 0;
   color: var(--default-color);
-  background-color: color-mix(in srgb, var(--background-color), transparent 20%);
+  background-color: color-mix(
+    in srgb,
+    var(--background-color),
+    transparent 20%
+  );
   border-color: color-mix(in srgb, var(--default-color), transparent 80%);
 }
 
-.get-a-quote .php-email-form input[type=text]:focus,
-.get-a-quote .php-email-form input[type=email]:focus,
+.get-a-quote .php-email-form input[type="text"]:focus,
+.get-a-quote .php-email-form input[type="email"]:focus,
 .get-a-quote .php-email-form textarea:focus {
   border-color: var(--accent-color);
 }
 
-.get-a-quote .php-email-form input[type=text]::placeholder,
-.get-a-quote .php-email-form input[type=email]::placeholder,
+.get-a-quote .php-email-form input[type="text"]::placeholder,
+.get-a-quote .php-email-form input[type="email"]::placeholder,
 .get-a-quote .php-email-form textarea::placeholder {
   color: color-mix(in srgb, var(--default-color), transparent 70%);
 }
 
-.get-a-quote .php-email-form button[type=submit] {
+.get-a-quote .php-email-form button[type="submit"] {
   color: var(--contrast-color);
   background: var(--accent-color);
   border: 0;
@@ -2709,10 +2700,9 @@ hero {
   border-radius: 4px;
 }
 
-.get-a-quote .php-email-form button[type=submit]:hover {
+.get-a-quote .php-email-form button[type="submit"]:hover {
   background: color-mix(in srgb, var(--accent-color), transparent 20%);
 }
-
 
 /*--------------------------------------------------------------
 # Starter Section Section
@@ -2721,16 +2711,17 @@ hero {
   /* Add your styles here
 } */
 
-
 /*--------------------------------------------------------------
 # Login Page
 --------------------------------------------------------------*/
 
 .bg-login {
-  background: url("{% static 'assets1/img/world-dotted-map.png' %}") no-repeat center center/cover;
+  background: url("{% static 'assets1/img/world-dotted-map.png' %}") no-repeat
+    center center/cover;
 }
 
-.bg-login, .bg-login .container section {
+.bg-login,
+.bg-login .container section {
   background-color: #0e1d34;
 }
 
@@ -2747,8 +2738,7 @@ hero {
 .login .container {
   position: relative;
   z-index: 3;
-} 
- 
+}
 
 .card .card-body div h5 {
   color: var(--heading-color);
@@ -2757,7 +2747,7 @@ hero {
 }
 
 .sd {
-  background-color:#0d42ff !important;
+  background-color: #0d42ff !important;
   color: #ffffff;
   display: block;
   text-align: center;
@@ -2784,6 +2774,4 @@ hero {
 
 .forgot-password:hover {
   text-decoration: underline;
-  
 }
-

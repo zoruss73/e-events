@@ -61,7 +61,21 @@ def notifyOrganizer(request, booking):
             messages.success(request, "Booking confirmed successfully!")
         else:
             messages.success(request, "Booking email did not send")
+
+def sendMessageToOrganizer(request, name, email, subject, message):
+    organizer_user = User.objects.filter(is_staff=True, is_superuser=False).first()
+    if organizer_user:
+        email_message = render_to_string("template_organizer_inquire_message.html", {
+            "organizer": organizer_user,
+            "name":name,
+            "email":email,
+            "message":message,
+        })
+        email_organizer = EmailMessage(subject, email_message, to=[organizer_user.email])
+        if email_organizer.send():
+            messages.success(request, "Inquiry sent successfully!")
             
+
 def getMessage(request):
     room = Room.objects.get(user1=request.user)
     if room:
@@ -143,14 +157,34 @@ def landing_page(request):
     package = Package.objects.all()
     awards = Awards.objects.order_by('-id')
     faq = Faq.objects.order_by('-id')
+    services = Services.objects.order_by('-id')
     
+    if request.method == 'POST':
+        form_type = request.POST.get("form_type")
+         
+        if form_type == "form1":
+            name = request.POST.get("name")
+            email = request.POST.get("email")
+            subject = request.POST.get("subject")
+            message = request.POST.get("message")
+            
+        elif form_type == "form2":
+            name = request.POST.get("name")
+            email = request.POST.get("email")
+            subject = request.POST.get("subject")
+            message = request.POST.get("message")
+            
+        sendMessageToOrganizer(request, name, email, subject, message)
+        
+        return redirect('user:landingpage')
     context = {
         'hero':hero, 
         'about':about, 
         'projects':projects, 
         'packages':package,
         'awards':awards,
-        'faqs':faq
+        'faqs':faq,
+        'services':services,
         }
     return render(request, 'user/landing_page.html', context)
 

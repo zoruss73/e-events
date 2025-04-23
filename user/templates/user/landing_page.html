@@ -72,43 +72,6 @@
         <h2>Projects</h2>
         <p>Here are some of my projects.</p>
       </div>
-
-      {% comment %} <div class="container">
-        <div class="row gy-4">
-          {% for project in  projects %}
-          <div class="col-lg-4 cold-md-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="card">
-              <div class="card-img">
-                <img src="{{project.img.url}}" alt="" class="img-fluid" />
-              </div>
-            </div>
-          </div> 
-          {% endfor %}
-        </div>
-      </div>
-      <div class="container text-center mt-4" data-aos="fade-up" data-aos-delay="100">
-        <a href="" class="view-more-btn">View More Projects</a>
-      </div> 
-
-      <div class="container">
-        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
-            {% for project in projects %}
-            <div class="carousel-item {% if forloop.counter == 1 %}  active{% endif %}">
-              <img src="{{project.img.url}}" alt="" class="img-fluid " />
-            </div>
-            {% endfor %}
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        </div>
-      </div> {% endcomment %}
       <div id="gridContainer" class="container d-block d-md-block d-lg-block">
         <div class="row gy-4">
           {% for project in projects %}
@@ -126,7 +89,6 @@
         </div>
       </div>
     
-      <!-- Carousel Layout (Shown on Tablet & Mobile) -->
       <div id="carouselContainer" class="container d-none d-md-none">
         <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
           <div class="carousel-inner">
@@ -207,9 +169,9 @@
                 
               </ul>
               {% if package.package_type == "fixed" %}
-              <a href="#" class="buy-btn">View Package</a>
+              <a href="" data-bs-toggle="modal" data-bs-target="#viewPackages" class="buy-btn">View Package</a>
               {% else %}
-              <a href="{% url 'user:login' %}" class="buy-btn">Get a quote</a>
+              <a href=""  data-bs-toggle="modal" data-bs-target="#getAQuote" class="buy-btn">Get a quote</a>
               {% endif %}
             </div>
           </div>
@@ -270,7 +232,9 @@
         <div class="form-container sign-up">
 
             <div class="card p-4 info-box-email">
-              <form action="" method="post" class="email-from">
+              <form method="post" class="email-from">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="form1">
                 <div class="row">
 
                   <div class="col-md-6">
@@ -290,19 +254,14 @@
                   </div>
 
                   <div class="col-md-12 text-center">
-                    {% comment %} <div class="loading">Loading</div>
-                    <div class="error-message"></div>
-                    <div class="sent-message">Your message has been sent. Thank you!</div> {% endcomment %}
                     <button type="submit" class="send-email-btn">Send Message</button>
                   </div>
-
                 </div>
               </form>
             </div>
 
         </div>
 
-        <!-- Default -->
         <div class="form-container sign-in">
           <div class="form-card-containers">
 
@@ -311,14 +270,16 @@
 
                 <div class="col-lg-6 ">
                   <div class="info-box-card text-center">
-                    <i class="bi bi-geo-alt">Address</i>
+                    <i class="bi bi-geo-alt"></i>
+                    Address
                       <p class="px-3">Vinzons, Camarines Norte</p>
                   </div>
                 </div>
 
                 <div class="col-lg-6">
                   <div class="info-box-card text-center">
-                    <i class="bi bi-telephone">Address</i>
+                    <i class="bi bi-telephone"></i>
+                    Address
                     <p class="px-3">Vinzons, Camarines Norte</p>
                   </div>
                 </div>
@@ -333,7 +294,8 @@
 
                 <div class="col-lg-6">
                   <div class="info-box-card text-center">
-                    <i class="bi bi-clock">Address</i>
+                    <i class="bi bi-clock"></i>
+                    Address
                     <p class="px-3">Vinzons, Camarines Norte</p>
                   </div>
                 </div>
@@ -373,6 +335,82 @@
     {% comment %} End footer {% endcomment %}
   </main>
 
+  {% comment %} Modal All Packages {% endcomment %}
+
+  <div class="modal fade" id="viewPackages" tabindex="-1" aria-labelledby="viewPackagesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Services Included</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {% for service in services %}
+          <label for="service_{{forloop.counter}}" class="btn btn-primary text-light me-2 my-2">{{service.service_name}}</label>
+          {% endfor %}
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  {% comment %} End of modal {% endcomment %}
+
+  {% comment %} Modal Get a Quote {% endcomment %}
+  <div class="modal fade" id="getAQuote" tabindex="-1" aria-labelledby="getAQuoteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="getAQuoteModalLabel">Get a Quote</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" class="email-from">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="form2">
+            <div class="row gy-4">
+
+              <div class="col-md-6">
+                <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+              </div>
+
+              <div class="col-md-6 ">
+                <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+              </div>
+
+              <div class="col-12">
+                <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+              </div>
+
+              <div class="col-12">
+                <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+              </div>
+
+              <div class="col-12 text-center mb-3">
+                <button type="submit" class="send-email-btn">Send Message</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  {% comment %} End of Modal get a quote {% endcomment %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector("form").addEventListener("submit", function (e) {
+            Swal.fire({
+                title: "Please wait...",
+                text: "",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+    });
+  </script>
   <script>
     function toggleView() {
       let gridContainer = document.getElementById("gridContainer");
@@ -391,4 +429,5 @@
     window.addEventListener("load", toggleView);
     window.addEventListener("resize", toggleView);
   </script>
+
 {% endblock %}
