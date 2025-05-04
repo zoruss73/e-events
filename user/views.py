@@ -293,20 +293,24 @@ def new_password(request):
         return redirect('user:landingpage')
     
     user_obj = User.objects.get(email=verified_email)
-
+    error_new_password = None
     if request.method == "POST":
         pass1 = request.POST.get("password1")
         pass2 = request.POST.get("password2")
 
         if pass1 == pass2:
-            user_obj.password = make_password(pass1)
-            user_obj.save()
-            messages.success(request, "Password reset successfully. You can login now.")
-            return redirect('user:login')
+            try:
+                validate_password(pass1, user_obj)
+                user_obj.password = make_password(pass1)
+                user_obj.save()
+                messages.success(request, "Password reset successfully. You can login now.")
+                return redirect('user:login')
+            except ValidationError as e:
+                error_new_password = e.messages
         else:
             messages.error(request, "Passwords do not match")
 
-    return render(request,'user/new_password.html')
+    return render(request,'user/new_password.html', {'error_new_password':error_new_password})
 
 def dashboard(request):
     if request.user.is_authenticated:
@@ -455,10 +459,11 @@ def booking_confirmed(request):
     return redirect('user:booking')
 
 def payment_history(request):
+    organizer = User.objects.filter(is_staff=True, is_superuser=False).first()
     payment = Payment.objects.filter(user=request.user)
     chats = getMessage(request)
     
-    return render(request, 'user/payment_history.html', {'payments':payment, 'message': chats})
+    return render(request, 'user/payment_history.html', {'payments':payment, 'message': chats, 'organizer':organizer})
 
 def accounts_settings(request):
     user = request.user
@@ -520,5 +525,6 @@ def user_change_password(request):
     return render(request, 'user/change_password.html', context)
             
 
-
-
+def view_services(request):
+    services = Services.objects.all().order_by('-id')
+    return render(request, 'user/services.html', {'services':services})

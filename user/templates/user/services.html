@@ -1,0 +1,28 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block title %}
+  E-Events | Services
+{% endblock %}
+
+{% block content %}
+{% include "components1/sidebar.html" %}
+<div class="row">
+	{% for service in services %}
+	<div class="col-lg-4 col-md-12">
+		<div class="card info-card d-flex justify-content-center" data-name="{{ service.service_name }}">
+			<div class="card-body position-relative">
+				<div class="d-flex justify-content-between align-items-center">
+					<div class="card-title">{{ service.service_name }}</div>
+	
+				</div>
+	
+				<div class="ps-3">
+					<h3 class="service-price">₱ {{ service.service_price }}</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+	
+</div>
+{% endblock content %}

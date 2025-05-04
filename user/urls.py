@@ -23,6 +23,7 @@ urlpatterns = [
     
     path('user/payment-history/', views.payment_history, name="payment-history"),
     path('user/account-settings/', views.accounts_settings, name="account-settings"),
+    path('user/services-offered/', views.view_services, name="view-services"),
     # path('user/account-settings/', views.update_account_details, name="update-account-settings"),
     
     path('user/account-settings/change-password/', views.user_change_password, name="user-change-password"),

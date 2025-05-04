@@ -19,8 +19,8 @@
 
               <div class="card mb-3">
                 <div class="card-body">
-                    <div class="pt-4 pb-2">
-                        <h5 class="text-center pb-0 fs-4">OTP CONFIRMATION</h5>
+                    <div class="pb-2">
+                        <h5 class="text-center pb-0 fs-4" style="color: #0d42ff;">OTP CONFIRMATION</h5>
                         <p class="text-center small">Please confirm your otp to continue changing your password.</p>
                     </div>
 
@@ -28,11 +28,11 @@
                       {% csrf_token %}
                         <div class="mb-2">
                             <label for="otp_number">OTP</label>
-                            <input type="text" class="form-control" name="otp_number" id="otp_number" placeholder="123456" required maxlength="6">
+                            <input type="number" class="form-control" name="otp_number" id="otp_number" placeholder="123456" required maxlength="6">
                         </div>
 
                         <div class="mb-3">
-                            <button type="submit" class="sd w-100">Send</button>
+                            <button type="submit" class="sd w-100">Confirm</button>
                         </div>
                     </form>
                 </div>
@@ -43,4 +43,73 @@
       </section>
     </div>
   </main>
+
+  <style>
+    main {
+      height: 100%;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #0f0f2d, #1f1f4d);
+      color: #fff;
+      overflow: hidden;
+    }
+
+    p,label {
+      color: #fff;
+    }
+
+    .forgot-form input{
+      color: white !important;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 2rem;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .logo h3 {
+      font-size: 40px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #00dbde, #fc00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00dbde; }
+      to { text-shadow: 0 0 20px #fc00ff; }
+    }
+
+    input.form-control {
+      background-color: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      transition: all 0.3s;
+    }
+
+    input.form-control:focus {
+      background-color: rgba(255,255,255,0.1);
+      border-color: #00dbde;
+      box-shadow: 0 0 10px #00dbde;
+    }
+    
+    .form-control::placeholder {
+      color: #fff !important;
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    #otp_number {
+      color: #fff;
+    }
+  </style>
 {% endblock %}

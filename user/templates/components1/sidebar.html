@@ -164,18 +164,18 @@
     </li>
 
     <li class="nav-item">
-      <a href="" class="nav-link collapsed">
+      <a href="{% url 'user:view-services' %}" class="nav-link collapsed">
         <i class="bi bi-box"></i>
         <span>Our Services</span>
       </a>
     </li>
 
-    <li class="nav-item">
+    {% comment %} <li class="nav-item">
       <a href="" class="nav-link collapsed">
         <i class="bi bi-award"></i>
         <span>Our Awards</span>
       </a>
-    </li>
+    </li> {% endcomment %}
 
     <li class="nav-item">
       <a class="nav-link collapsed" href="{% url 'user:payment-history' %}">
