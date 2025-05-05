@@ -7,6 +7,28 @@
 
 {% block content %}
   {% include 'components1/navbar.html' %}
+  <script>
+    console.log("Events:", {{ events|safe }});
+    document.addEventListener('DOMContentLoaded', function () {
+      var calendarEl = document.getElementById('calendar');
+  
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: {{ events|safe }},
+      });
+  
+      calendar.render();
+      const sidebarToggleBtn = document.querySelector('.toggle-sidebar-btn'); 
+      if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', function () {
+          
+          setTimeout(() => {
+            calendar.updateSize();
+          }, 300); 
+        });
+      }
+    });
+  </script>
 
   <main class="main" data-bs-spy="scroll" data-bs-target="#navmenu">
     {% comment %}Hero Section{% endcomment %}
@@ -52,7 +74,11 @@
         <div class="row gy-4">
           <div class="col-lg-6 position-relative align-self-start  order-first" data-aos="fade-up" data-aos-delay="200">
             
-            <img src="{{about.img.url}}" class="img-fluid" alt="sad" height="300"/>
+            <div class="card">
+              <div class="card-img" style="height: 300px;">
+                <img src="{{about.img.url}}" class="img-fluid" alt="sad"/>
+              </div>
+            </div>
           </div>
 
           <div class="col-lg-6 content order-last " data-aos="fade-up" data-aos-delay="100">
@@ -85,7 +111,7 @@
           {% endfor %}
         </div>
         <div class="container text-center mt-4" data-aos="fade-up" data-aos-delay="100">
-          <a href="" class="view-more-btn">View More Projects</a>
+          {% comment %} <a href="" class="view-more-btn">View More Projects</a> {% endcomment %}
         </div>
       </div>
     
@@ -152,7 +178,7 @@
             <div class="package-item">
               <h3>{{package.package_name}}</h3>
               {% if package.package_type == "fixed" %}
-                <h4><sup>₱</sup>{{package.package_price|floatformat:0|intcomma}}</h4>
+                <h4><sup>₱</sup>{{service_price|floatformat:0|intcomma}}</h4>
               {% else %}
               <h4><sup>₱</sup>Custom</h4>
               {% endif %}
@@ -182,7 +208,13 @@
 
     </section>
     {% comment %}End of packages Section{% endcomment %}
+    
+    <section class="section d-flex justify-content-center" id="calendarContainer">
 
+      <div id="calendar" class="mb-4 col-10 "></div>
+
+    </section>
+    
     <section id="faq" class="faq section">
 
       <!-- Section Title -->
@@ -272,31 +304,31 @@
                   <div class="info-box-card text-center">
                     <i class="bi bi-geo-alt"></i>
                     Address
-                      <p class="px-3">Vinzons, Camarines Norte</p>
+                      <p class="px-3">Santo Domingo Vinzons, Camarines Norte</p>
                   </div>
                 </div>
 
                 <div class="col-lg-6">
                   <div class="info-box-card text-center">
                     <i class="bi bi-telephone"></i>
-                    Address
-                    <p class="px-3">Vinzons, Camarines Norte</p>
+                    Contact
+                    <p class="px-3">09318928633</p>
                   </div>
                 </div>
 
                 <div class="col-lg-6 ">
                   <div class="info-box-card text-center">
                     <i class="bi bi-envelope"></i>
-                    Address
-                    <p class="px-3">Vinzons, Camarines Norte</p>
+                    Email
+                    <p class="px-3">e-events@gmail.com</p>
                   </div>
                 </div>
 
                 <div class="col-lg-6">
                   <div class="info-box-card text-center">
                     <i class="bi bi-clock"></i>
-                    Address
-                    <p class="px-3">Vinzons, Camarines Norte</p>
+                    Open Hours  
+                    <p class="px-3">8:00 AM - 5:00 PM</p>
                   </div>
                 </div>
               </div>

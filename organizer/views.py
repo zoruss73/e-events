@@ -170,6 +170,7 @@ def update_booking(request, id):
     booking.save()
     messages.success(request, "Updated successfully")
     return redirect('organizer:bookings')
+
 def confrim_payments(request):
     return render(request, 'organizer/pending-payments.html')
 

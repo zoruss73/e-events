@@ -35,6 +35,8 @@ from chat.models import Room, Message
 from django.db.models import Count
 from django.utils import timezone
 from django.db.models import Prefetch
+from django.db.models import Sum
+
 # Create your views here.
 
 def notifyOrganizer(request, booking):
@@ -158,7 +160,16 @@ def landing_page(request):
     awards = Awards.objects.order_by('-id')
     faq = Faq.objects.order_by('-id')
     services = Services.objects.order_by('-id')
-    
+    service_price = Services.objects.aggregate(Sum('service_price'))['service_price__sum']
+    bookings = Booking.objects.filter(wedding_date__gte=now().date())
+    events = []
+    for booking in bookings:
+        events.append({
+            "title": "Booked",
+            "start": booking.wedding_date.isoformat(),
+            "allDay": True,
+            "id": booking.booking_id,
+        })
     if request.method == 'POST':
         form_type = request.POST.get("form_type")
          
@@ -185,6 +196,8 @@ def landing_page(request):
         'awards':awards,
         'faqs':faq,
         'services':services,
+        'events':json.dumps(events),
+        'service_price':service_price,
         }
     return render(request, 'user/landing_page.html', context)
 
