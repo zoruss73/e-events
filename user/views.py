@@ -327,8 +327,17 @@ def new_password(request):
 
 def dashboard(request):
     if request.user.is_authenticated:
-        today = timezone.now().date()
+        today = date.today()
         bookings = Booking.objects.filter(user=request.user, payment_status="pending").first()
+        booked_date = Booking.objects.filter(wedding_date__gte=now().date())
+        events = []
+        for booking in booked_date:
+            events.append({
+                "title": "Booked",
+                "start": booking.wedding_date.isoformat(),
+                "allDay": True,
+                "id": booking.booking_id,
+            })
         bookings_count = Booking.objects.filter(user=request.user).count()
         services_count = Services.objects.all().count()
         upcoming_event = Booking.objects.filter(wedding_date__gte=today, user=request.user).order_by('wedding_date').first()
@@ -343,7 +352,8 @@ def dashboard(request):
             'message': chats,
             'services_count': services_count,
             'service_stats': json.dumps(list(booked_service_counts)),
-            'days_left': days_left
+            'days_left': days_left,
+            'events':json.dumps(events),
             }
         return render(request, 'user/dashboard.html', context)
     return redirect('user:landingpage')

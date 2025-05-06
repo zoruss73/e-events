@@ -7,7 +7,28 @@
 
 {% block content %}
   {% include 'components1/sidebar.html' %}
-
+  <script>
+    console.log("Events:", {{ events|safe }});
+    document.addEventListener('DOMContentLoaded', function () {
+      var calendarEl = document.getElementById('calendar');
+  
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: {{ events|safe }},
+      });
+  
+      calendar.render();
+      const sidebarToggleBtn = document.querySelector('.toggle-sidebar-btn'); 
+      if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', function () {
+          
+          setTimeout(() => {
+            calendar.updateSize();
+          }, 300); 
+        });
+      }
+    });
+  </script>
   <section class="section dashboard">
     <div class="row">
         
@@ -68,7 +89,9 @@
                 
                 <h3>
                   {% if days_left %}
-                    {{days_left}} days left
+                    {{ days_left }} day{% if days_left != 1 %}s{% endif %} left
+                  {% elif days_left == 0 %}
+                    Today is your big day. Congrats!
                   {% else %}
                   0 
                   {% endif %}
@@ -81,9 +104,7 @@
         </div>
       </div>
 
-      
-
-      <div class="col-xxl-8 col-md-6">
+      <div class="col-xxl-6 col-md-12">
         <div class="card">
           <div class="card-body">
             <div class="card-title">Our top picked services:</div>
@@ -131,35 +152,18 @@
           </div>
         </div>
       </div> 
-      {% comment %} <div class="col-xxl-4 col-md-6">
-        <div class="card info-card sales-card d-flex justify-content-center">
-          <div class="card-body">
-            <h4 class="card-title">Countdown:</h4>
-            <div class="row text-center mt-3" id="countdown">
-              <div class="col-3">
-                <h3 id="days" class="display-4">0</h3>
-                <p>Days</p>
-              </div>
-              <div class="col-3">
-                <h3 id="hours" class="display-4">0</h3>
-                <p>Hours</p>
-              </div>
-              <div class="col-3">
-                <h3 id="minutes" class="display-4">0</h3>
-                <p>Minutes</p>
-              </div>
-              <div class="col-3">
-                <h3 id="seconds" class="display-4">0</h3>
-                <p>Seconds</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> {% endcomment %}
+      
+      <div class="col-xxl-6 col-md-12">
+        <section class="section d-flex justify-content-center" id="calendarContainer">
+
+          <div id="calendar"  class="col-12"></div>
+    
+        </section>
+      </div>
     </div>
   </section>
 
-  <script>
+  {% comment %} <script>
     const wedding_date = new Date("{{ bookings.wedding_date|date:'Y-m-d' }}  00:00:00").getTime();
 
     const x = setInterval(function(){
@@ -190,5 +194,5 @@
 
     }, 50)
 
-  </script>
+  </script> {% endcomment %}
 {% endblock %}

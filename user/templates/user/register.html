@@ -31,29 +31,48 @@
                     {% csrf_token %}
                 
                     {% for field in form %}
-                        <div class="mb-2 {% if field.name in 'first_name last_name' %} col-6 {% endif %} registration-form">
-                            {{ field.label_tag }}
+                      <div class="mb-2 {% if field.name in 'first_name last_name' %} col-6 {% endif %} registration-form">
+                        {{ field.label_tag }}
+
+                        {% if field.name == "password1" or field.name == "password2" %}
+                          <div class="input-group">
                             <input 
-                                type="{{ field.field.widget.input_type }}" 
-                                name="{{ field.name }}" 
-                                id="id_{{ field.name }}" 
-                                class="form-control {% if field.errors %} is-invalid {% endif %}" 
-                                value="{{ field.value|default_if_none:'' }}"
-                                placeholder="{{ field.field.widget.attrs.placeholder }}"
-                                required
+                              type="password"
+                              name="{{ field.name }}" 
+                              id="id_{{ field.name }}" 
+                              class="form-control {% if field.errors %} is-invalid {% endif %}" 
+                              value="{{ field.value|default_if_none:'' }}"
+                              placeholder="{{ field.field.widget.attrs.placeholder }}"
+                              required
                             >
-                
-                            {% if field.errors %}
-                                <div class="invalid-feedback">
-                                    {% for error in field.errors %}
-                                        {% if error.strip %}  {# check if the message is not just empty #}
-                                            <small>{{ error }}</small><br>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
+                            <span class="input-group-text" style="background-color: #ffffff0d;">
+                              <i class="bi bi-eye text-white toggle-password" data-target="id_{{ field.name }}" style="cursor: pointer;"></i>
+                            </span>
+                          </div>
+                        {% else %}
+                          <input 
+                            type="{{ field.field.widget.input_type }}" 
+                            name="{{ field.name }}" 
+                            id="id_{{ field.name }}" 
+                            class="form-control {% if field.errors %} is-invalid {% endif %}" 
+                            value="{{ field.value|default_if_none:'' }}"
+                            placeholder="{{ field.field.widget.attrs.placeholder }}"
+                            required
+                          >
+                        {% endif %}
+
+                        {% if field.errors %}
+                          <div class="invalid-feedback">
+                            {% for error in field.errors %}
+                              {% if error.strip %}
+                                <small>{{ error }}</small><br>
+                              {% endif %}
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+                      </div>
                     {% endfor %}
+
                 
                     <div class="col-12 my-2">
                         <button type="submit" class="btn btn-primary w-100 sd">Submit</button>
@@ -169,6 +188,19 @@
                 }
             });
         });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggles = document.querySelectorAll(".toggle-password");
+      toggles.forEach(icon => {
+        icon.addEventListener("click", function () {
+          const input = document.getElementById(this.dataset.target);
+          const type = input.getAttribute("type") === "password" ? "text" : "password";
+          input.setAttribute("type", type);
+          this.classList.toggle("bi-eye");
+          this.classList.toggle("bi-eye-slash");
+        });
+      });
     });
   </script>
 {% endblock %}

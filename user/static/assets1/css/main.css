@@ -970,7 +970,7 @@ hero {
 }
 
 .hero .hero-text-area {
-  padding-top: 10%;
+  padding-top: 30%;
 }
 
 .hero .small-video video {
@@ -1000,7 +1000,7 @@ hero {
   font-weight: 700;
 }
 
-@media (max-width: 575px) {
+@media (max-width: 575px)  {
   .hero h2 {
     font-size: 30px;
   }
@@ -1018,6 +1018,26 @@ hero {
     position: relative;
     z-index: 3;
     top: 10%;
+  }
+  .hero .hero-text-area {
+    padding-top: 0 !important;
+  }
+  #smallVideo {
+    display: flex;
+  }
+}
+
+@media(max-width:768px){
+  .hero .hero-text-area {
+    padding-top: 0 !important;
+  }
+  #smallVideo {
+    display: none;
+  }
+
+  .form-card-containers {
+    padding-top: 35% !important;
+    margin-bottom: 10px;
   }
 }
 
@@ -1044,9 +1064,7 @@ hero {
     top: 0 vh;
     text-align: center;
   }
-  .hero .hero-text-area {
-    padding-top: 0;
-  }
+  
 }
 
 @media (max-height: 775px) {
@@ -2774,4 +2792,16 @@ hero {
 
 .forgot-password:hover {
   text-decoration: underline;
+}
+
+
+
+@media (max-width: 768px) {  /* Adjust this width as needed for phones */
+  .mobile-auto-height {
+    height: auto !important;
+  }
+
+  .hero-container {
+    margin-top: 0 !important;
+  }
 }
