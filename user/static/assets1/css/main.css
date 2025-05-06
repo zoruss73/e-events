@@ -970,7 +970,7 @@ hero {
 }
 
 .hero .hero-text-area {
-  padding-top: 30%;
+  padding-top: 25%;
 }
 
 .hero .small-video video {
@@ -1033,11 +1033,6 @@ hero {
   }
   #smallVideo {
     display: none;
-  }
-
-  .form-card-containers {
-    padding-top: 35% !important;
-    margin-bottom: 10px;
   }
 }
 
@@ -2510,11 +2505,7 @@ hero {
     padding-top: 30%;
   }
 
-  @media (max-width: 775px) {
-    .form-card-containers {
-      padding-top: 60%;
-    }
-  }
+
 
   .contactus .container3.active .sign-in {
     transform: translateY(100%);
@@ -2640,6 +2631,19 @@ hero {
   }
 }
 
+
+
+@media (max-width: 775px) {
+  .form-card-containers {
+    padding-top: 40%;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-card-containers {
+    padding-top: 70%;
+  }
+}
 /*--------------------------------------------------------------
 # Get A Quote Section
 --------------------------------------------------------------*/
