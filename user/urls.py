@@ -8,6 +8,7 @@ app_name = "user"
 urlpatterns = [
     path('', views.landing_page, name="landingpage"),
     path('login/', views.log_in, name="login"),
+    path('login/confirm-otp', views.confirm_otp_login, name="login-confirm-otp"),
     path('logout/', views.log_out, name="logout"),
     path('register/', views.register, name="register"),
     path('activate/<uidb64>/<token>', views.activate, name="activate"),

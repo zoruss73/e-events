@@ -21,20 +21,40 @@
                 <div class="card-body">
                     <div class="pb-2">
                         <h5 class="text-center pb-0 fs-4" style="color: #0d42ff;">OTP CONFIRMATION</h5>
-                        <p class="text-center small">Please confirm your otp to continue changing your password.</p>
+                        <p class="text-center small">{{text}}</p>
                     </div>
 
-                    <form method="post" class="row g-3">
+                    <form method="post" class="row g-3" id="otp-form">
                       {% csrf_token %}
-                        <div class="mb-2">
-                            <label for="otp_number">OTP</label>
-                            <input type="number" class="form-control" name="otp_number" id="otp_number" placeholder="123456" required maxlength="6">
+                      <div class="mb-2">
+                        <label class="form-label d-block text-center">OTP</label>
+                        <div class="d-flex justify-content-center gap-2 mb-2">
+                          {% for i in "123456" %}
+                            <input type="text"
+                                  class="form-control text-center otp-input"
+                                  name="otp_digit_{{ i }}"
+                                  id="otp_digit_{{ i }}"
+                                  maxlength="1"
+                                  pattern="[0-9]*"
+                                  inputmode="numeric"
+                                  required>
+                          {% endfor %}
                         </div>
+                        <div>
+                          <small class="text-warning mb-0 fst-italic">
+                            Can't find your OTP? Check your spam folder.
+                          </small>
+                        </div>
+                      </div>
 
-                        <div class="mb-3">
-                            <button type="submit" class="sd w-100">Confirm</button>
+                      <div class="mb-3">
+                        <button type="submit" class="sd w-100">Confirm</button>
+                        <div class="text-end">
+                          <small class="text-light">Didn't get the OTP?<a href="?resend=true"> Resend</a></small>
                         </div>
+                      </div>
                     </form>
+
                 </div>
               </div>
             </div>
@@ -43,7 +63,27 @@
       </section>
     </div>
   </main>
+  <script>
+    const inputs = document.querySelectorAll('.otp-input');
 
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        // Keep only digits
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        // Auto-move to next field
+        if (input.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && input.value === '' && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+  </script>
   <style>
     main {
       height: 100%;

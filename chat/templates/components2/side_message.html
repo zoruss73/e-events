@@ -4,18 +4,18 @@
     <a href="{% if request.user.is_staff %}{% url 'organizer:dashboard' %}{% else %}{% url 'user:dashboard' %}{% endif %}" class="backToDashboard"><i class="bi bi-arrow-left"></i></a>
     <h3 class="d-inline-block">Messages</h3>
   </div>
-  {% if request.user.is_staff %}
+  {% comment %} {% if request.user.is_staff %}
     <div class="input-group">
       <span class="input-group-text bi bi-search" id="basic-addon1"></span>
       <input type="search" name="search_client" id="search_client" class="form-control" placeholder="Search client..." />
     </div>
-  {% endif %}
+  {% endif %} {% endcomment %}
 
   <div class="client-list mt-3" id="c-list">
     <ul class="list-unstyled chat-list mt-2 mb-0">
       {% for item in user_last_messages %}
         <li class="clearfix rawr {% if room_id == item.room.id %}active{% endif %}">
-          <img src="{% static 'assets2/img/avatar.svg' %}" alt="" />
+          <img src="{{item.other_user.userprofile.profile_img.url}}" alt="" />
           <div class="about">
             <a href="{% url 'chat:chat_history' item.room.id %}" class="{% if room_id == item.room.id %}active-link{% endif %}" data-room-id="{{ item.room.id }}"><strong>{{ item.other_user.first_name }} {{ item.other_user.last_name }}</strong></a>
             <div class="last_chat_time">

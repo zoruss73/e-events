@@ -258,6 +258,7 @@ body {
 .receiver_img {
     width: 40px;
     border: 50%;
+    border-radius: 50%;
 }
 
 #new_chat {

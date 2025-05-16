@@ -36,7 +36,7 @@ from django.db.models import Count
 from django.utils import timezone
 from django.db.models import Prefetch
 from django.db.models import Sum
-
+from datetime import datetime, timedelta
 # Create your views here.
 
 def notifyOrganizer(request, booking):
@@ -129,13 +129,14 @@ def activateEmail(request, user):
     else:
         messages.error(request, 'Error sending email, please check you email inputted if you typed it correctly.')
         
-def sendOTPEmail(request, user_email):
-    otp = str(random.randint(100000, 999999))
+def sendOTPEmail(request, user_email,  mail_subject, otp=None):
+    if otp is None:
+        otp = str(random.randint(100000, 999999))
     request.session['otp'] = otp
     request.session['email'] = user_email
-    request.session.set_expiry(300)
+    request.session['otp_timestamp'] = datetime.now().isoformat()
 
-    mail_subject = "This is your OTP Code to reset your password"
+    # mail_subject = "This is your OTP Code to reset your password"
     message = f"""
         Your One-Time Password (OTP) is {otp}
         OTP will expire in 5 minutes.
@@ -145,8 +146,13 @@ def sendOTPEmail(request, user_email):
     
     email = EmailMessage(mail_subject, message, to=[user_email])
 
-    if email.send():
-        messages.success(request, 'OTP has been sent successfully.')
+    try:
+        if email.send():
+            messages.success(request, 'OTP has been sent successfully.')
+            return True
+    except Exception as e:
+        messages.error(request, "Error occured please try again later.")
+        return False
     
 def landing_page(request):
     if request.user.is_authenticated and request.user.is_staff:
@@ -219,25 +225,28 @@ def log_in(request):
                 user = User.objects.get(email=email)
 
                 if not user.is_active:
-                    # ✅ Send activation email if the user exists but is inactive
                     print("skibidi")
                     activateEmail(request, user)
                     messages.info(request, "Your account is not yet activated. A new activation link has been sent to your email.")
-                    return redirect("user:login")  # Redirect to prevent resending on refresh
+                    return redirect("user:login") 
 
                 authenticated_user = authenticate(username=user.username, password=password)
+                
                 if authenticated_user is not None:
-                    login(request, authenticated_user)
-                    request.session.set_expiry(1209600)
+                    if sendOTPEmail(request, user.username, "This is your OTP code to continue your log in."):
+                        request.session['pre_auth_user_id'] = authenticated_user.id
+                        return redirect('user:login-confirm-otp')
+                    # login(request, authenticated_user)
+                    # request.session.set_expiry(1209600)
 
-                    if authenticated_user.is_staff:
-                        return redirect(reverse("organizer:dashboard"))
-                    else:
-                        return redirect("user:dashboard")
+                    # if authenticated_user.is_staff:
+                    #     return redirect(reverse("organizer:dashboard"))
+                    # else:
+                    #     return redirect("user:dashboard")
 
             except User.DoesNotExist:
                 messages.error(request, "Invalid email or password.")
-                return redirect("user:login")  # Redirect to prevent resending on refresh
+                return redirect("user:login")
 
         for error in form.errors.values():
             for message in error:
@@ -247,6 +256,49 @@ def log_in(request):
         form = LoginForm()
 
     return render(request, "user/log_in.html", {"form": form})
+
+def confirm_otp_login(request):
+    text = "Please confirm your otp to continue your login."
+    user_id = request.session.get('pre_auth_user_id')
+    if not user_id:
+        messages.error(request, "Session expired. Please log in again.")
+        return redirect('user:login')
+    
+    user = User.objects.get(id=user_id)
+    stored_otp = get_valid_stored_otp(request)
+    if request.GET.get("resend") == "true":
+        sendOTPEmail(request, user.email, "This is your OTP code to continue your login.")
+        messages.success(request, "OTP has been resent to your email.")
+        return redirect('user:login-confirm-otp')
+
+    if stored_otp is None:
+        return render(request, 'user/confirm_otp.html', {
+            "text": "OTP has expired or is invalid.",
+            "resend_prompt": True
+        })
+
+    if request.method == "POST":
+        otp_digits = [
+            request.POST.get(f'otp_digit_{i}') for i in range(1, 7)
+        ]
+        entered_otp = ''.join(filter(None, otp_digits))
+
+        if stored_otp == entered_otp:
+            login(request, user)
+            request.session.set_expiry(1209600)  # 2 weeks
+
+            request.session.pop('pre_auth_user_id', None)
+            request.session.pop('otp', None)
+            request.session.pop('otp_timestamp', None)
+
+            if user.is_staff:
+                return redirect(reverse("organizer:dashboard"))
+            return redirect("user:dashboard")
+
+        else:
+            messages.error(request, "Incorrect OTP. Please try again.")
+
+    return render(request, 'user/confirm_otp.html', {"text": text})
 
 def log_out(request):
     logout(request)
@@ -276,18 +328,57 @@ def forgot_password(request):
         email = request.POST.get("user_email")
 
         if User.objects.filter(email=email).exists():
-            sendOTPEmail(request, email)
-            return redirect('user:confirmotp')
+            if sendOTPEmail(request, email, "This is your OTP Code to reset your password"):
+                return redirect('user:confirmotp')
         else:
             messages.error(request, "Invalid email or not registered on the website.")
     
     return render (request, 'user/forgot_password.html')
 
+def get_valid_stored_otp(request):
+    otp = request.session.get('otp')
+    timestamp_str = request.session.get('otp_timestamp')
+
+    if not otp or not timestamp_str:
+        return None
+
+    try:
+        timestamp = datetime.fromisoformat(timestamp_str)
+    except (TypeError, ValueError):
+        return None 
+
+    if datetime.now() <= timestamp + timedelta(minutes=5):
+        return otp  
+
+    return None  
+
 def confirm_otp (request):
+    stored_otp = get_valid_stored_otp(request)
+    user_email = request.session.get('email')
+    text = "Please confirm your otp to continue changing your password."
+    print(user_email)
+    if stored_otp is None and request.GET.get("resend") != "true":
+        messages.warning(request, 'OTP has expired or is invalid. Please request a new one.')
+        return redirect('user:confirmotp')
+    
+    if request.GET.get("resend") == "true":
+        if stored_otp:
+            sendOTPEmail(request, user_email, "This is your OTP Code to reset your password", stored_otp)
+            return redirect('user:confirmotp')
+        else:
+            sendOTPEmail(request, user_email, "This is your OTP Code to reset your password")
+            return redirect('user:confirmotp')
     if request.method == "POST":
-        entered_otp = request.POST.get('otp_number')
-        stored_otp = request.session.get('otp')
-        user_email = request.session.get('email')
+        otp_digits = [
+            request.POST.get('otp_digit_1'),
+            request.POST.get('otp_digit_2'),
+            request.POST.get('otp_digit_3'),
+            request.POST.get('otp_digit_4'),
+            request.POST.get('otp_digit_5'),
+            request.POST.get('otp_digit_6'),
+        ]
+        entered_otp = ''.join(otp_digits)
+        
         if stored_otp and entered_otp:
             if stored_otp == entered_otp:
                 del request.session['otp']
@@ -296,7 +387,7 @@ def confirm_otp (request):
                 return redirect('user:newpassword')
             else:
                 messages.error(request, "Invalid OTP.")
-    return render(request, 'user/confirm_otp.html')
+    return render(request, 'user/confirm_otp.html', {"text":text})
 
 def new_password(request):
     verified_email = request.session.get('verified_email')

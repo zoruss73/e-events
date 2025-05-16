@@ -36,7 +36,7 @@ def activity_logs_view(request, activity, description):
     )
 
 def getMessage(request):
-    # Step 1: Get the latest timestamp per room
+   
     latest_messages_per_room = (
         Message.objects.values('room')
         .annotate(latest_timestamp=Max('timestamp'))
@@ -46,10 +46,8 @@ def getMessage(request):
     result = []
 
     for item in latest_messages_per_room:
-        # Step 2: Get the actual message with this timestamp and room
+        
         message = Message.objects.get(room_id=item['room'], timestamp=item['latest_timestamp'])
-
-        # Step 3: Get receiver
         room = message.room
         receiver = room.user1 if request.user != room.user1 else room.user2
 

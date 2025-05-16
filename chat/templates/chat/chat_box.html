@@ -13,7 +13,11 @@ E-Events |  Message
       <div class="chat-header d-flex align-items-center">
         <i class="bi bi-arrow-left me-3 d-xl-none" id="backToSidebar"></i>
         {% comment %} <button id="backToSidebar" class="btn btn-outline-primary me-3 d-xl-none"><i class="bi bi-arrow-left"></i></button> {% endcomment %}
-        <img src="{% static 'assets2/img/avatar.svg' %}" alt="" class="order-1" />
+        <img src="{% if request.user.username == room.user1.username %}
+        {{room.user2.userprofile.profile_img.url}}
+        {% else %}
+        {{room.user1.userprofile.profile_img.url}}
+        {% endif %}" alt="" class="order-1" />
         <div class="about order-2 d-inline-block flot-left ms-3">
           <p class="mb-0" style="">
             <strong>
@@ -55,7 +59,11 @@ E-Events |  Message
             {% else %}
             <!-- Receiver's Message -->
             <div class="d-flex align-items-center">
-                <img src="{% static 'assets2/img/avatar.svg' %}" alt="avatar" class="receiver_img me-2" />
+                <img src="{% if request.user.username == room.user1.username %}
+                {{room.user2.userprofile.profile_img.url}}
+                {% else %}
+                {{room.user1.userprofile.profile_img.url}}
+                {% endif %}" alt="avatar" class="receiver_img rounded-circle me-2" />
                 <div class="message my-message mt-3">
                   <p class="mb-0">{{ chat.message }}</p>
                 </div>
@@ -181,7 +189,11 @@ E-Events |  Message
       } else {
         newMessageItem.innerHTML = `
             <div class="d-flex align-items-center">
-                <img src="{% static 'assets2/img/avatar.svg' %}" alt="avatar" class="receiver_img me-2" />
+                <img src="{% if request.user.username == room.user1.username %}
+                {{room.user2.userprofile.profile_img.url}}
+                {% else %}
+                {{room.user1.userprofile.profile_img.url}}
+                {% endif %}" alt="avatar" class="receiver_img me-2" />
                 <div class="message my-message mt-3">
                     <p class="mb-0">${message}</p>
                 </div>
